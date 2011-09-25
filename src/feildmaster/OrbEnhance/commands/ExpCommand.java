@@ -19,39 +19,36 @@ public class ExpCommand implements CommandExecutor {
         if(size == 0) return yourLevel(sender);
         if(size > 2) return invalidCommand(sender, label);
 
+        if(!sender.hasPermission("orbEnhance.admin")) return noPermission(sender);
+
         Player p = null;
         Integer exp = null;
         String format = "Your experience was set to %1$s";
         String format2 = "You have been given %1$s experience";
-
-        if(!sender.hasPermission("orbEnhance.admin")) return noPermission(sender);
+        String parse = null;
 
         if(size == 1 && sender instanceof Player) {
             p = (Player)sender;
-
-            try {
-                exp = Integer.parseInt(args[0]);
-                if(args[0].startsWith("+")||args[0].startsWith("-"))
-                    exp = p.getTotalExperience()+exp;
-            } catch (NumberFormatException n) {
-                return notANumber(sender);
-            }
+            parse = args[0];
         } else if (size == 2) {
             p = sender.getServer().getPlayer(args[0]);
-            if(p==null) return playerNotFound(sender);
-
-            try {
-                exp = Integer.parseInt(args[1]);
-                if(args[1].startsWith("+")||args[1].startsWith("-")) {
-                    format = String.format(format2, exp.toString());
-                    exp = p.getTotalExperience()+exp;
-                } else
-                    format = String.format(format, exp.toString());
-            } catch (NumberFormatException n) {
-                return notANumber(sender);
-            }
+            parse = args[1];
         } else
             return invalidCommand(sender, label);
+
+        if(p==null) return playerNotFound(sender);
+
+        try {
+            exp = Integer.parseInt(parse);
+        } catch (NumberFormatException n) {
+            return notANumber(sender);
+        }
+
+        if(parse.startsWith("+")||parse.startsWith("-")) {
+            format = String.format(format2, exp.toString());
+            exp += p.getTotalExperience();
+        } else
+            format = String.format(format, exp.toString());
 
         int old_exp = p.getExperience();
         int old_lvl = p.getLevel();
@@ -59,8 +56,10 @@ public class ExpCommand implements CommandExecutor {
         p.setTotalExperience(0);
         p.setExperience(exp);
 
-        if(!(sender instanceof Player) || !((Player)sender).equals(p)) // Sender console, or player is a different player
+        // Sender console, or player is a different player
+        if(!(sender instanceof Player) || !((Player)sender).equals(p))
             p.sendMessage(Plugin.format(ChatColor.YELLOW,format));
+
         sender.sendMessage(Plugin.format("Player experience changed from "+old_lvl+"/"+old_exp+" to "+p.getLevel()+"/"+p.getExperience()));
         return true;
     }
@@ -91,7 +90,6 @@ public class ExpCommand implements CommandExecutor {
             sender.sendMessage(Plugin.format("Your level: "+level));
             sender.sendMessage(Plugin.format("Experience: "+p.getExperience()+"/"+(level*10+10)));
         }
-
         return true;
     }
 }
