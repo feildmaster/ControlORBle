@@ -2,3 +2,14 @@ name: ConrolORBle
 main: feildmaster.OrbEnhance.plugin
 version: 1.0
 author: feildmaster
+
+commands:
+  exp:
+    description: View/Change experience
+  exp-reload:
+    permission: ornEnhance.admin
+
+permissions:
+  orbEnhance.admin:
+    default: op
+    description: Allows player to change players experience
