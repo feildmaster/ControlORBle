@@ -17,8 +17,20 @@ public class plugin extends JavaPlugin {
 //    public Map<String, Integer> expBuffer = new HashMap<String, Integer>();
 
     // Other variables
-    public boolean virtualExp = true;
-    public int expLoss = 0; // % of experience lost on death
+    public boolean virtualExp = false;
+    public boolean virtualPlayerExp = false; // Not used yet
+
+    // Player experience loss
+    public int expLoss = 0; // % of experience lost on deaths
+    public int expLossContact = 0; // % of experience lost on cactus.
+    public int expLossLava = 0; // % of experience lost by Lava
+    public int expLossTnT = 0; // % of experience lost by TnT
+    public int expLossDrown = 0; // % of experience lost by Drowning
+    public int expLossFire = 0; // % of experience lost by Fire
+    public int expLossStarve = 0; // % of experience lost by Starvation
+    public int expLossLightning = 0; // % of experience being struck by Lightning
+    public int expLossSuicide = 0; // % of experience lost from Suicide
+    public int expLossVoid = 0; // % of experience lost from the Void
 
     // Monster variables
     public int CaveSpider = 10;
@@ -40,7 +52,7 @@ public class plugin extends JavaPlugin {
     public int Pig = 1;
     public int Sheep = 1;
     public int Squid = 1;
-    public int TamedWolf = 0;
+    public int TamedWolf = 0; // Not configurable (yet)
 
     public void onDisable() {
         getServer().getLogger().info(String.format("[%1$s] v%2$s Disabled!",getDescription().getName(), getDescription().getVersion()));

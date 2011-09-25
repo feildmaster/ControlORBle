@@ -1,13 +1,13 @@
 name: ConrolORBle
 main: feildmaster.OrbEnhance.plugin
-version: 1.0
+version: 2.0
 author: feildmaster
 
 commands:
   exp:
     description: View/Change experience
   exp-reload:
-    permission: ornEnhance.admin
+    description: Allows reload of exp config
 
 permissions:
   orbEnhance.admin:

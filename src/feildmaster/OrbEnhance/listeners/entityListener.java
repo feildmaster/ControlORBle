@@ -1,8 +1,6 @@
 package feildmaster.OrbEnhance.listeners;
 
 import feildmaster.OrbEnhance.plugin;
-import org.bukkit.craftbukkit.entity.CraftArrow;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.CaveSpider;
 import org.bukkit.entity.Chicken;
@@ -55,17 +53,17 @@ public class entityListener extends EntityListener {
 
         Entity damager = ((EntityDamageByEntityEvent)cause).getDamager();
 
-        if(!(damager instanceof CraftArrow) && !(damager instanceof CraftPlayer)) return; // Not a player kill
+        if(!(damager instanceof Arrow) && !(damager instanceof Player)) return; // Not a player kill
 
         Player p = null;
 
         // Check if arrow fired from player!
-        if(damager instanceof CraftArrow) {
-            Arrow damage_arrow = (Arrow)(CraftArrow)damager;
-            if(!(damage_arrow.getShooter() instanceof Player)) return; // Not a player arrow. :o
+        if(damager instanceof Arrow) {
+            Arrow damage_arrow = (Arrow)damager;
+            if(!(damage_arrow.getShooter() instanceof Player)) return; // Not a players arrow.
             p = (Player)damage_arrow.getShooter();
         } else
-            p = (Player)(CraftPlayer)damager;
+            p = (Player)damager;
 
         // Monsters
         if (entity instanceof CaveSpider)
@@ -93,17 +91,16 @@ public class entityListener extends EntityListener {
         else if (entity instanceof Zombie)
             monsterDeathHandler(event, p, Plugin.Zombie);
         // Animals
-        else if (entity instanceof Chicken) {
+        else if (entity instanceof Chicken)
             monsterDeathHandler(event, p, Plugin.Chicken);
-        } else if (entity instanceof Cow) {
+        else if (entity instanceof Cow)
             monsterDeathHandler(event, p, Plugin.Cow);
-        } else if (entity instanceof Pig) {
+        else if (entity instanceof Pig)
             monsterDeathHandler(event, p, Plugin.Pig);
-        } else if (entity instanceof Sheep) {
+        else if (entity instanceof Sheep)
             monsterDeathHandler(event, p, Plugin.Sheep);
-        } else if (entity instanceof Squid) {
+        else if (entity instanceof Squid)
             monsterDeathHandler(event, p, Plugin.Squid);
-        }
     }
 
     private void playerDeathHandler(PlayerDeathEvent event) {
