@@ -106,7 +106,7 @@ public class entityListener extends EntityListener {
 
     private void playerDeathHandler(PlayerDeathEvent event) {
         Player p = (Player)event.getEntity();
-        int loss = (Plugin.playerDelevel?p.getTotalExperience():p.getExperience())*(calculatePercent(event.getEntity().getLastDamageCause().getCause())/100);
+        int loss = (Plugin.playerDelevel?p.getTotalExperience():p.getExperience())*(calculatePercent(p.getLastDamageCause().getCause())/100);
         event.setDroppedExp(loss);
         event.setNewExp((Plugin.playerDelevel?p.getTotalExperience():p.getTotalExperience()-p.getExperience())-loss);
     }
@@ -119,7 +119,7 @@ public class entityListener extends EntityListener {
             event.setDroppedExp(exp);
     }
     private int calculatePercent(DamageCause dc) {
-        // TODO: MultiLoss switch
+        // TODO: MultiLoss
         if(Plugin.multiLoss)
             switch(dc) {
                 case CONTACT:
