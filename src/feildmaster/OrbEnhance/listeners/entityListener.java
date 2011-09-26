@@ -24,6 +24,7 @@ import org.bukkit.entity.Zombie;
 //import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -104,8 +105,10 @@ public class entityListener extends EntityListener {
     }
 
     private void playerDeathHandler(PlayerDeathEvent event) {
-        // More arguments will come here later. :)
-        event.setNewExp(((Player)event.getEntity()).getTotalExperience());
+        Player p = (Player)event.getEntity();
+        int loss = (Plugin.playerDelevel?p.getTotalExperience():p.getExperience())*(calculatePercent(event.getEntity().getLastDamageCause().getCause())/100);
+        event.setDroppedExp(loss);
+        event.setNewExp((Plugin.playerDelevel?p.getTotalExperience():p.getTotalExperience()-p.getExperience())-loss);
     }
 
     private void monsterDeathHandler(EntityDeathEvent event, Player p, int exp) {
@@ -114,5 +117,36 @@ public class entityListener extends EntityListener {
             p.sendMessage(String.format("You have gained %1$d experience", exp));
         } else
             event.setDroppedExp(exp);
+    }
+    private int calculatePercent(DamageCause dc) {
+        // TODO: MultiLoss switch
+        if(Plugin.multiLoss)
+            switch(dc) {
+                case CONTACT:
+
+                case SUFFOCATION:
+
+                case FIRE:
+                case FIRE_TICK:
+
+                case LAVA:
+
+                case DROWNING:
+
+                case BLOCK_EXPLOSION:
+
+                case VOID:
+
+                case LIGHTNING:
+
+                case SUICIDE:
+
+                case FALL:
+
+                default:
+                    return Plugin.expLoss;
+            }
+        else
+            return Plugin.expLoss;
     }
 }

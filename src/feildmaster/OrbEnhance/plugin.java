@@ -3,13 +3,8 @@ package feildmaster.OrbEnhance;
 import feildmaster.OrbEnhance.listeners.entityListener;
 import feildmaster.OrbEnhance.commands.ExpCommand;
 import feildmaster.OrbEnhance.commands.ExpReloadCommand;
-import java.util.HashMap;
-import java.util.Map;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerListener;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class plugin extends JavaPlugin {
@@ -19,6 +14,8 @@ public class plugin extends JavaPlugin {
     // Other variables
     public boolean virtualExp = false;
     public boolean virtualPlayerExp = false; // Not used yet
+    public boolean playerDelevel = false;
+    public boolean multiLoss = false;
 
     // Player experience loss
     public int expLoss = 0; // % of experience lost on deaths

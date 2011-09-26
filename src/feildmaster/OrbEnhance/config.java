@@ -16,6 +16,7 @@ public class config {
     public void reload() {
         config.load();
         loadConfigVars();
+        config.save(); // For the... just in case moments.
     }
 
     private void loadConfigVars() {
@@ -25,18 +26,20 @@ public class config {
         // Config Variables
         Plugin.virtualExp = config.getBoolean("config.virtualEXP", false);
         //Plugin.virtualPlayerExp = config.getBoolean("config.virtualPlayerEXP", false);
+        //Plugin.playerDelevel = config.getBoolean("config.playerDelevel", false);
+        //Plugin.multiLoss = config.getBoolean("config.customLoss", false);
 
         // Player experience variables
-        //Plugin.expLoss = getPercent("", Plugin.expLoss);
-        //Plugin.expLoss = getPercent("", Plugin.expLoss);
-        //Plugin.expLoss = getPercent("", Plugin.expLoss);
-        //Plugin.expLoss = getPercent("", Plugin.expLoss);
-        //Plugin.expLoss = getPercent("", Plugin.expLoss);
-        //Plugin.expLoss = getPercent("", Plugin.expLoss);
-        //Plugin.expLoss = getPercent("", Plugin.expLoss);
-        //Plugin.expLoss = getPercent("", Plugin.expLoss);
-        //Plugin.expLoss = getPercent("", Plugin.expLoss);
-        //Plugin.expLoss = getPercent("", Plugin.expLoss);
+        Plugin.expLoss = getPercent("expLoss.Basic", 0);
+        //Plugin.expLossContact = getPercent("expLoss.Contact", 0);
+        //Plugin.expLossDrown = getPercent("expLoss.Drown", 0);
+        //Plugin.expLossFire = getPercent("expLoss.Fire", 0);
+        //Plugin.expLossLava = getPercent("expLoss.Lava", 0);
+        //Plugin.expLossLightning = getPercent("expLoss.Lightning", 0);
+        //Plugin.expLossStarve = getPercent("expLoss.Starve", 0);
+        //Plugin.expLossSuicide = getPercent("expLoss.Suicide", 0);
+        //Plugin.expLossTnT = getPercent("expLoss.TnT", 0);
+        //Plugin.expLossVoid = getPercent("expLoss.Void", 0);
 
         // Monsters
         Plugin.CaveSpider = getExp("monster.CaveSpider", 10);
@@ -61,15 +64,15 @@ public class config {
         //Plugin.TamedWolf = getExp("animal.TamedWolf", 0);
     }
 
-//    private int getPercent(String node, int def) {
-//        int value = config.getInt(node, def);
-//        if(value < 0 || value > 100) value = setProperty(node, value);
-//        return value;
-//    }
+    private int getPercent(String node, int def) {
+        int value = config.getInt(node, def);
+        if(value < 0 || value > 100) value = setProperty(node, def);
+        return value;
+    }
 
     private int getExp(String node, int def) {
         int value = config.getInt(node, def);
-        if(value < 0) value = setProperty(node, value);
+        if(value < 0) value = setProperty(node, def);
         return value;
     }
 
