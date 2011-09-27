@@ -25,6 +25,7 @@ public class config {
 
         // Config Variables
         Plugin.virtualExp = config.getBoolean("config.virtualEXP", false);
+        Plugin.showTotal = config.getBoolean("config.showTotal", false);
         //Plugin.virtualPlayerExp = config.getBoolean("config.virtualPlayerEXP", false);
         //Plugin.playerDelevel = config.getBoolean("config.playerDelevel", false);
         //Plugin.multiLoss = config.getBoolean("config.customLoss", false);

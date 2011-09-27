@@ -40,7 +40,6 @@ public class ExpCommand implements CommandExecutor {
 
         int old_exp = p.getExperience();
         int old_lvl = p.getLevel();
-        int old_ttl = p.getTotalExperience();
 
         try {
             exp = Integer.parseInt(parse);
@@ -63,7 +62,7 @@ public class ExpCommand implements CommandExecutor {
         if(!(sender instanceof Player) || !((Player)sender).equals(p))
             p.sendMessage(Plugin.format(ChatColor.YELLOW,format));
 
-        sender.sendMessage(Plugin.format("Player experience changed from "+old_lvl+"/"+old_exp+"/"+old_ttl+" to "+p.getLevel()+"/"+p.getExperience()+"/"+p.getTotalExperience()));
+        sender.sendMessage(Plugin.format("Player experience changed from "+old_lvl+"/"+old_exp+" to "+p.getLevel()+"/"+p.getExperience()));
         return true;
     }
 
@@ -92,7 +91,8 @@ public class ExpCommand implements CommandExecutor {
 
             sender.sendMessage(Plugin.format("Your level: "+level));
             sender.sendMessage(Plugin.format("Experience: "+p.getExperience()+"/"+(level*10+10)));
-            sender.sendMessage(Plugin.format("Total Exp : "+p.getTotalExperience()));
+            if(Plugin.showTotal)
+                sender.sendMessage(Plugin.format("Total Exp : "+p.getTotalExperience()));
         }
         return true;
     }

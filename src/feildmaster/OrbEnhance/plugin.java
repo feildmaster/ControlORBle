@@ -12,6 +12,7 @@ public class plugin extends JavaPlugin {
 //    public Map<String, Integer> expBuffer = new HashMap<String, Integer>();
 
     // Other variables
+    public boolean showTotal = false;
     public boolean virtualExp = false;
     public boolean virtualPlayerExp = false; // Not used yet
     public boolean playerDelevel = false;
