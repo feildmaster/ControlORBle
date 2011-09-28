@@ -56,7 +56,8 @@ public class ExpCommand implements CommandExecutor {
         p.setLevel(0);
         p.setExperience(0);
         p.setTotalExperience(0);
-        p.setExperience(exp);
+        if(exp > 0)
+            p.setExperience(exp);
 
         // Sender console, or player is a different player
         if(!(sender instanceof Player) || !((Player)sender).equals(p))

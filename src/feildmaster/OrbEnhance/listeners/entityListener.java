@@ -108,8 +108,10 @@ public class entityListener extends EntityListener {
         // TODO: Redo de-level logic
         Player p = (Player)event.getEntity();
         Double loss = (p.getLevel()*10+10)*(calculatePercent(p.getLastDamageCause().getCause())/100D);
-        event.setDroppedExp(loss.intValue());
-        event.setNewExp(p.getTotalExperience()-loss.intValue());// TODO: It messes up here, when preventing de-level. :P
+        if(loss.intValue() > 0)
+            event.setDroppedExp(loss.intValue());
+        if(p.getTotalExperience()-loss.intValue() > 0)
+            event.setNewExp(p.getTotalExperience()-loss.intValue());// TODO: It messes up here, when preventing de-level. :P
     }
 
     private void monsterDeathHandler(EntityDeathEvent event, Player p, int exp) {
