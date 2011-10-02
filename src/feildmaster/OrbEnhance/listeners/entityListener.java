@@ -107,9 +107,25 @@ public class entityListener extends EntityListener {
     private void playerDeathHandler(PlayerDeathEvent event) {
         // TODO: Redo de-level logic
         Player p = (Player)event.getEntity();
-        Double loss = (p.getLevel()*10+10)*(calculatePercent(p.getLastDamageCause().getCause())/100D);
-        if(loss.intValue() > 0)
-            event.setDroppedExp(loss.intValue());
+        Double loss = 0D;
+        DamageCause damageCause = DamageCause.CUSTOM;
+        if(p.getLastDamageCause() != null) {
+        	damageCause = p.getLastDamageCause().getCause();
+        }
+        if(this.Plugin.basedOnTotalExp) {
+        	loss = p.getTotalExperience() * calculatePercent(damageCause) / 100D;
+        } else {
+        	loss = (p.getLevel()*10+10)*(calculatePercent(damageCause)/100D);
+        }
+        if(loss.intValue() > 0) {
+        	Double dropExp = 0D;
+        	if(Plugin.expDisappear > 0 && Plugin.expDisappear <= 100) {
+        		dropExp = loss * (100 - Plugin.expDisappear) / 100D;
+        	} else {
+        		dropExp = loss;
+        	}
+            event.setDroppedExp(dropExp.intValue());
+        }
         if(p.getTotalExperience()-loss.intValue() > 0)
             event.setNewExp(p.getTotalExperience()-loss.intValue());// TODO: It messes up here, when preventing de-level. :P
     }

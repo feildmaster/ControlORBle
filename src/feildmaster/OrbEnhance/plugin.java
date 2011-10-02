@@ -20,6 +20,7 @@ public class plugin extends JavaPlugin {
 
     // Player experience loss
     public int expLoss = 0; // % of experience lost on deaths
+    public int expDisappear = 0; // % of experience disappear in lost
     public int expLossContact = 0; // % of experience lost on cactus.
     public int expLossLava = 0; // % of experience lost by Lava
     public int expLossTnT = 0; // % of experience lost by TnT
@@ -29,6 +30,7 @@ public class plugin extends JavaPlugin {
     public int expLossLightning = 0; // % of experience being struck by Lightning
     public int expLossSuicide = 0; // % of experience lost from Suicide
     public int expLossVoid = 0; // % of experience lost from the Void
+    public boolean basedOnTotalExp = false;
 
     // Monster variables
     public int CaveSpider = 10;
