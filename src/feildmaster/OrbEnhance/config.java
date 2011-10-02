@@ -32,6 +32,8 @@ public class config {
 
         // Player experience variables
         Plugin.expLoss = getPercent("expLoss.Basic", 0);
+        Plugin.expDisappear = getPercent("expLoss.Disappear", 0);
+        Plugin.basedOnTotalExp = config.getBoolean("expLoss.BasedOnTotalExp", false);
         //Plugin.expLossContact = getPercent("expLoss.Contact", 0);
         //Plugin.expLossDrown = getPercent("expLoss.Drown", 0);
         //Plugin.expLossFire = getPercent("expLoss.Fire", 0);

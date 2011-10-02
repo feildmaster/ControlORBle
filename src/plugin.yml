@@ -1,8 +1,7 @@
-name: ConrolORBle
+name: ControlORBle
 main: feildmaster.OrbEnhance.plugin
-version: 2.1.1
-author: feildmaster
-
+version: 2.1.2
+authors: [feildmaster, hwei]
 commands:
   exp:
     description: View/Change experience
