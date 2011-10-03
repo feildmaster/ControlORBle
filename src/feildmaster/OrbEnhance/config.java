@@ -26,21 +26,23 @@ public class config {
         // Config Variables
         Plugin.virtualExp = config.getBoolean("config.virtualEXP", false);
         Plugin.showTotal = config.getBoolean("config.showTotal", false);
+        Plugin.lossByTotal = config.getBoolean("config.expLossByTotal", false);
         //Plugin.virtualPlayerExp = config.getBoolean("config.virtualPlayerEXP", false);
-        //Plugin.playerDelevel = config.getBoolean("config.playerDelevel", false);
-        //Plugin.multiLoss = config.getBoolean("config.customLoss", false);
+        Plugin.playerDelevel = config.getBoolean("config.playerDelevel", true);
+        Plugin.expBurn = getPercent("config.expBurn", 0);
+        Plugin.multiLoss = config.getBoolean("config.customExpLoss", false);
 
         // Player experience variables
         Plugin.expLoss = getPercent("expLoss.Basic", 0);
-        //Plugin.expLossContact = getPercent("expLoss.Contact", 0);
-        //Plugin.expLossDrown = getPercent("expLoss.Drown", 0);
-        //Plugin.expLossFire = getPercent("expLoss.Fire", 0);
-        //Plugin.expLossLava = getPercent("expLoss.Lava", 0);
-        //Plugin.expLossLightning = getPercent("expLoss.Lightning", 0);
-        //Plugin.expLossStarve = getPercent("expLoss.Starve", 0);
-        //Plugin.expLossSuicide = getPercent("expLoss.Suicide", 0);
-        //Plugin.expLossTnT = getPercent("expLoss.TnT", 0);
-        //Plugin.expLossVoid = getPercent("expLoss.Void", 0);
+        Plugin.expLossContact = getPercent("expLoss.Contact", 0);
+        Plugin.expLossDrown = getPercent("expLoss.Drown", 0);
+        Plugin.expLossFire = getPercent("expLoss.Fire", 0);
+        Plugin.expLossLava = getPercent("expLoss.Lava", 0);
+        Plugin.expLossLightning = getPercent("expLoss.Lightning", 0);
+        Plugin.expLossStarve = getPercent("expLoss.Starve", 0);
+        Plugin.expLossSuicide = getPercent("expLoss.Suicide", 0);
+        Plugin.expLossTnT = getPercent("expLoss.TnT", 0);
+        Plugin.expLossVoid = getPercent("expLoss.Void", 0);
 
         // Monsters
         Plugin.CaveSpider = getExp("monster.CaveSpider", 10);
@@ -62,6 +64,7 @@ public class config {
         Plugin.Pig = getExp("animal.Pig", 1);
         Plugin.Sheep = getExp("animal.Sheep", 1);
         Plugin.Squid = getExp("animal.Squid", 1);
+        // TODO: Allow tamed wolf config?
         //Plugin.TamedWolf = getExp("animal.TamedWolf", 0);
     }
 

@@ -21,7 +21,6 @@ import org.bukkit.entity.Spider;
 import org.bukkit.entity.Squid;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
-//import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -35,7 +34,6 @@ public class entityListener extends EntityListener {
     public entityListener(plugin p) {
         Plugin = p;
     }
-
 
     public void onEntityDeath(EntityDeathEvent event) {
         event.setDroppedExp(0); // Set to 0, let plugin override later.
@@ -56,7 +54,7 @@ public class entityListener extends EntityListener {
 
         if(!(damager instanceof Arrow) && !(damager instanceof Player)) return; // Not a player kill
 
-        Player p = null;
+        Player p;
 
         // Check if arrow fired from player!
         if(damager instanceof Arrow) {
@@ -105,13 +103,20 @@ public class entityListener extends EntityListener {
     }
 
     private void playerDeathHandler(PlayerDeathEvent event) {
-        // TODO: Redo de-level logic
         Player p = (Player)event.getEntity();
-        Double loss = (p.getLevel()*10+10)*(calculatePercent(p.getLastDamageCause().getCause())/100D);
+        Double loss = (Plugin.lossByTotal?p.getTotalExperience():(p.getLevel()*10+10))*(calculatePercent(p.getLastDamageCause()==null?DamageCause.CUSTOM:p.getLastDamageCause().getCause())/100D);
+
+        if(!Plugin.playerDelevel && loss > p.getExperience())
+            loss = (double) p.getExperience();
+
+        if(p.getTotalExperience()-loss.intValue() > 0)
+            event.setNewExp(p.getTotalExperience()-loss.intValue());
+
+        if(Plugin.expBurn > 0)
+            loss -= loss * (Plugin.expBurn/100D) ;
+
         if(loss.intValue() > 0)
             event.setDroppedExp(loss.intValue());
-        if(p.getTotalExperience()-loss.intValue() > 0)
-            event.setNewExp(p.getTotalExperience()-loss.intValue());// TODO: It messes up here, when preventing de-level. :P
     }
 
     private void monsterDeathHandler(EntityDeathEvent event, Player p, int exp) {
@@ -122,29 +127,35 @@ public class entityListener extends EntityListener {
             event.setDroppedExp(exp);
     }
     private int calculatePercent(DamageCause dc) {
-        // TODO: MultiLoss
         if(Plugin.multiLoss)
             switch(dc) {
-                case CONTACT:
+                //case SUFFOCATION: // TODO: Suffocation percent
+                //case FALL: // TODO: Fall percent
 
-                case SUFFOCATION:
+                case CONTACT:
+                    return Plugin.expLossContact;
 
                 case FIRE:
                 case FIRE_TICK:
+                    return Plugin.expLossFire;
 
                 case LAVA:
+                    return Plugin.expLossLava;
 
                 case DROWNING:
+                    return Plugin.expLossDrown;
 
                 case BLOCK_EXPLOSION:
+                    return Plugin.expLossTnT;
 
                 case VOID:
+                    return Plugin.expLossVoid;
 
                 case LIGHTNING:
+                    return Plugin.expLossLightning;
 
                 case SUICIDE:
-
-                case FALL:
+                    return Plugin.expLossSuicide;
 
                 default:
                     return Plugin.expLoss;

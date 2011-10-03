@@ -14,9 +14,11 @@ public class plugin extends JavaPlugin {
     // Other variables
     public boolean showTotal = false;
     public boolean virtualExp = false;
-    public boolean virtualPlayerExp = false; // Not used yet
-    public boolean playerDelevel = false;
+    public boolean virtualPlayerExp = false; // TODO: virtualPlayerExperience
+    public boolean playerDelevel = true;
     public boolean multiLoss = false;
+    public boolean lossByTotal = false;
+    public int expBurn = 0;
 
     // Player experience loss
     public int expLoss = 0; // % of experience lost on deaths
