@@ -109,8 +109,13 @@ public class entityListener extends EntityListener {
         if(!Plugin.playerDelevel && loss > p.getExperience())
             loss = (double) p.getExperience();
 
-        if(p.getTotalExperience()-loss.intValue() > 0)
+        if(p.getTotalExperience() > loss.intValue())
             event.setNewExp(p.getTotalExperience()-loss.intValue());
+        else if (event.getNewExp() != 0) {
+            event.setNewExp(0);
+            loss = (double) p.getTotalExperience();
+        } else
+            loss = (double) p.getTotalExperience();
 
         if(Plugin.expBurn > 0)
             loss -= loss * (Plugin.expBurn/100D) ;
