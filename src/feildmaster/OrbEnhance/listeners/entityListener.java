@@ -1,32 +1,9 @@
 package feildmaster.OrbEnhance.listeners;
 
-import feildmaster.OrbEnhance.plugin;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.CaveSpider;
-import org.bukkit.entity.Chicken;
-import org.bukkit.entity.Cow;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.Giant;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Silverfish;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.Spider;
-import org.bukkit.entity.Squid;
-import org.bukkit.entity.Wolf;
-import org.bukkit.entity.Zombie;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import feildmaster.OrbEnhance.*;
+import org.bukkit.entity.*;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityListener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class entityListener extends EntityListener {
     private final plugin Plugin;
@@ -104,18 +81,18 @@ public class entityListener extends EntityListener {
 
     private void playerDeathHandler(PlayerDeathEvent event) {
         Player p = (Player)event.getEntity();
-        Double loss = (Plugin.lossByTotal?p.getTotalExperience():(p.getLevel()*10+10))*(calculatePercent(p.getLastDamageCause()==null?DamageCause.CUSTOM:p.getLastDamageCause().getCause())/100D);
+        ExpEditor e = new ExpEditor(p);
+        Double loss = (Plugin.lossByTotal?e.getTotalExp():(e.getLevel()*10+10))*(calculatePercent(p.getLastDamageCause()==null?DamageCause.CUSTOM:p.getLastDamageCause().getCause())/100D);
 
-        if(!Plugin.playerDelevel && loss > p.getExperience())
-            loss = (double) p.getExperience();
+        if(!Plugin.playerDelevel && loss > e.getExp())
+            loss = (double) e.getExp();
 
-        if(p.getTotalExperience() > loss.intValue())
-            event.setNewExp(p.getTotalExperience()-loss.intValue());
-        else if (event.getNewExp() != 0) {
-            event.setNewExp(0);
-            loss = (double) p.getTotalExperience();
-        } else
-            loss = (double) p.getTotalExperience();
+        if(e.getTotalExp() > loss.intValue())
+            event.setNewExp(e.getTotalExp()-loss.intValue());
+        else {
+            if (event.getNewExp() != 0) event.setNewExp(0);
+            loss = (double) e.getTotalExp();
+        }
 
         if(Plugin.expBurn > 0)
             loss -= loss * (Plugin.expBurn/100D) ;

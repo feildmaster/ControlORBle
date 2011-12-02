@@ -1,5 +1,6 @@
 package feildmaster.OrbEnhance.commands;
 
+import feildmaster.OrbEnhance.ExpEditor;
 import feildmaster.OrbEnhance.plugin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -38,8 +39,10 @@ public class ExpCommand implements CommandExecutor {
 
         if(p==null) return playerNotFound(sender);
 
-        int old_exp = p.getExperience();
-        int old_lvl = p.getLevel();
+        ExpEditor e = new ExpEditor(p);
+
+        int old_exp = e.getExp();
+        int old_lvl = e.getLevel();
 
         try {
             exp = Integer.parseInt(parse);
@@ -49,21 +52,18 @@ public class ExpCommand implements CommandExecutor {
 
         if(parse.startsWith("+")||parse.startsWith("-")) {
             format = String.format(format2, exp.toString());
-            exp += p.getTotalExperience();
+            sender.sendMessage("Exp:"+ exp + " + " + e.getTotalExp() + " = " + (exp+e.getTotalExp()));
+            exp += e.getTotalExp();
         } else
             format = String.format(format, exp.toString());
 
-        p.setLevel(0);
-        p.setExperience(0);
-        p.setTotalExperience(0);
-        if(exp > 0)
-            p.setExperience(exp);
+        e.setExp(exp);
 
         // Sender console, or player is a different player
         if(!(sender instanceof Player) || !((Player)sender).equals(p))
             p.sendMessage(Plugin.format(ChatColor.YELLOW,format));
 
-        sender.sendMessage(Plugin.format("Player experience changed from "+old_lvl+"/"+old_exp+" to "+p.getLevel()+"/"+p.getExperience()));
+        sender.sendMessage(Plugin.format("Player experience changed from "+old_lvl+"/"+old_exp+" to "+e.getLevel()+"/"+e.getExp()));
         return true;
     }
 
@@ -87,13 +87,14 @@ public class ExpCommand implements CommandExecutor {
 
     private boolean yourLevel(CommandSender sender) {
         if(sender instanceof Player) {
-            Player p = (Player)sender;
+            ExpEditor p = new ExpEditor((Player)sender);
+
             int level = p.getLevel();
 
             sender.sendMessage(Plugin.format("Your level: "+level));
-            sender.sendMessage(Plugin.format("Experience: "+p.getExperience()+"/"+(level*10+10)));
+            sender.sendMessage(Plugin.format("Experience: "+p.getExp()+"/"+p.getExpToLevel()));
             if(Plugin.showTotal)
-                sender.sendMessage(Plugin.format("Total Exp : "+p.getTotalExperience()));
+                sender.sendMessage(Plugin.format("Total Exp : "+p.getTotalExp()));
         }
         return true;
     }
