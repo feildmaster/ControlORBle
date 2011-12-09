@@ -4,7 +4,6 @@
     <artifactId>ControlORBle</artifactId>
     <version>2.3 beta</version>
     <name>ControlORBle</name>
-    <label>ControlORBle</label>
     <repositories>
         <repository>
             <id>bukkit-repo</id>
