@@ -45,6 +45,10 @@ public class plugin extends JavaPlugin {
     public int Spider = 10;
     public int Wolf = 10;
     public int Zombie = 10;
+    // 1.0.0 patch
+    public int EnderDragon = 20000;
+    public int Blaze = 10;
+    public int MagmaCube = 10;
 
     // Animal variables
     public int Chicken = 1;

@@ -1,6 +1,6 @@
 name: ControlORBle
 main: feildmaster.OrbEnhance.plugin
-version: 2.3
+version: 2.3 beta
 author: feildmaster
 
 commands:

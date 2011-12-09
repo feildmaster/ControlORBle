@@ -64,8 +64,7 @@ public class config {
         Plugin.Pig = getExp("animal.Pig", 1);
         Plugin.Sheep = getExp("animal.Sheep", 1);
         Plugin.Squid = getExp("animal.Squid", 1);
-        // TODO: Allow tamed wolf config?
-        //Plugin.TamedWolf = getExp("animal.TamedWolf", 0);
+        //Plugin.TamedWolf = getExp("animal.Wolf", 0);
     }
 
     private int getPercent(String node, int def) {

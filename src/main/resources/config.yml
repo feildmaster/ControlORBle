@@ -1,0 +1,42 @@
+# Read about the configuration here:
+# http://dev.bukkit.org/server-mods/controlorble/pages/configuration/
+
+config:
+    customExpLoss: false
+    playerDelevel: true
+    virtualEXP: false
+    showTotal: false
+    expLossByTotal: false
+    expBurn: 0
+monster:
+    CaveSpider: 10
+    Creeper: 10
+    Enderman: 10
+    EnderDragon: 1000
+    Ghast: 10
+    Giant: 10
+    PigZombie: 10
+    Silverfish: 10
+    Skeleton: 10
+    Slime: 10
+    Spider: 10
+    Wolf: 10
+    Zombie: 10
+animal:
+    Chicken: 1
+    Cow: 1
+    Pig: 1
+    Sheep: 1
+    Squid: 1
+    Wolf: 0
+expLoss:
+    Basic: 0
+    Contact: 0
+    Drown: 0
+    Fire: 0
+    Lava: 0
+    Lightning: 0
+    Starve: 0
+    Suicide: 0
+    TnT: 0
+    Void: 0

@@ -66,6 +66,13 @@ public class entityListener extends EntityListener {
             monsterDeathHandler(event, p, ((Wolf)entity).isTamed()?Plugin.TamedWolf:Plugin.Wolf);
         else if (entity instanceof Zombie)
             monsterDeathHandler(event, p, Plugin.Zombie);
+        // 1.0.0 patch
+        else if (entity instanceof EnderDragon)
+            monsterDeathHandler(event, p, Plugin.EnderDragon);
+        else if (entity instanceof Blaze)
+            monsterDeathHandler(event, p, Plugin.Blaze);
+        else if (entity instanceof MagmaCube)
+            monsterDeathHandler(event, p, Plugin.MagmaCube);
         // Animals
         else if (entity instanceof Chicken)
             monsterDeathHandler(event, p, Plugin.Chicken);
