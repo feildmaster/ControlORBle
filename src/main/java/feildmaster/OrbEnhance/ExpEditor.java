@@ -26,6 +26,8 @@ public class ExpEditor {
 
         while(exp > 0) {
             int xp = getExpToLevel()-getExp();
+            if(xp > exp)
+                xp = exp;
             player.giveExp(xp);
             exp -= xp;
         }
@@ -36,8 +38,9 @@ public class ExpEditor {
     }
 
     public void takeExp(int exp, boolean fromTotal) {
-        if(exp < 0) return;
+        if(exp <= 0) return;
 
+        // Now lets make a better takeExp
         setExp(fromTotal?getTotalExp():getExp()-exp);
     }
 
