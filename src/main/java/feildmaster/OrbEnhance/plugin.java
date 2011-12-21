@@ -1,15 +1,16 @@
 package feildmaster.OrbEnhance;
 
-import feildmaster.OrbEnhance.listeners.entityListener;
+import feildmaster.OrbEnhance.listeners.*;
 import feildmaster.OrbEnhance.commands.ExpCommand;
-import feildmaster.OrbEnhance.commands.ExpReloadCommand;
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class plugin extends JavaPlugin {
     public config Config;
-//    public Map<String, Integer> expBuffer = new HashMap<String, Integer>();
+    public final Map<String, Integer> expBuffer = new HashMap<String, Integer>();
 
     // Other variables
     public boolean showTotal = false;
@@ -64,11 +65,14 @@ public class plugin extends JavaPlugin {
 
     public void onEnable() {
         // Register events
-        getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DEATH, new entityListener(this), Event.Priority.Low, this);
+        getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DEATH, new entityListener(this), Event.Priority.Highest, this);
+        getServer().getPluginManager().registerEvent(Event.Type.PLAYER_RESPAWN, new playerListener(this), Event.Priority.Highest, this);
 
         // Register commands
-        getServer().getPluginCommand("exp").setExecutor(new ExpCommand(this));
-        getServer().getPluginCommand("exp-reload").setExecutor(new ExpReloadCommand(this));
+        ExpCommand exp = new ExpCommand(this);
+        getServer().getPluginCommand("exp").setExecutor(exp);
+        getServer().getPluginCommand("exp-reload").setExecutor(exp);
+        getServer().getPluginCommand("xp").setExecutor(exp);
 
         // Load Config
         Config = new config(this);
@@ -84,31 +88,4 @@ public class plugin extends JavaPlugin {
     public String format(ChatColor color, String string) {
         return String.format(color+"[ControlORBle] %1$s", string);
     }
-
-//    public class playerListener extends PlayerListener implements Runnable {
-//        private plugin Plugin;
-//        private Player player;
-//
-//        public playerListener(plugin p) {
-//            Plugin = p;
-//        }
-//
-//        public void onPlayerRespawn(PlayerRespawnEvent event) {
-//            player = event.getPlayer();
-//
-//            getServer().broadcastMessage("Experience: "+event.getPlayer().getExperience());
-//
-//            if(expBuffer.containsKey(player.getName())) {
-//                getServer().getScheduler().scheduleSyncDelayedTask(Plugin, this, 20);
-//            } else
-//                player = null;
-//        }
-//
-//        public void run() {
-//            player.setExperience(expBuffer.get(player.getName()));
-//            expBuffer.remove(player.getName());
-//
-//            getServer().broadcastMessage("New Experience: "+player.getExperience());
-//        }
-//    }
 }

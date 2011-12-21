@@ -4,27 +4,31 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class ExpEditor {
-    private CraftPlayer cp;
+    private final Player player;
 
     public ExpEditor(Player player) {
-        cp = (CraftPlayer)player;
+        this.player = player;
     }
 
     // Handle experience
     public void setExp(int exp) {
-        cp.setExp(0);
-        cp.setLevel(0);
-        cp.setTotalExperience(0);
+        player.setExp(0);
+        player.setLevel(0);
+        player.setTotalExperience(0);
 
         if(exp <= 0) return;
 
-        cp.giveExp(exp);
+        giveExp(exp);
     }
 
     public void giveExp(int exp) {
-        if(exp < 0) return;
+        if(exp <= 0) return;
 
-        cp.giveExp(exp);
+        while(exp > 0) {
+            int xp = getExpToLevel()-getExp();
+            player.giveExp(xp);
+            exp -= xp;
+        }
     }
 
     public void takeExp(int exp) {
@@ -39,18 +43,18 @@ public class ExpEditor {
 
     // Get experience functions
     public int getExp() {
-        return (int) (getExpToLevel()*cp.getExp());
+        return (int) (getExpToLevel()*player.getExp());
     }
 
     public int getTotalExp() {
-        return cp.getTotalExperience();
+        return player.getTotalExperience();
     }
 
     public int getLevel() {
-        return cp.getLevel();
+        return player.getLevel();
     }
 
     public int getExpToLevel() {
-        return cp.getHandle().getExpTolevel();
+        return ((CraftPlayer)player).getHandle().getExpTolevel();
     }
 }

@@ -16,54 +16,72 @@ public class ExpCommand implements CommandExecutor {
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if(cmd.getName().equals("exp-reload")) {
+            return onReloadCommand(sender);
+        }
+
         int size = args.length;
         if(size == 0) return yourLevel(sender);
         if(size > 2) return invalidCommand(sender, label);
 
         if(!sender.hasPermission("orbEnhance.admin")) return noPermission(sender);
 
-        Player p = null;
+        Player p1 = null;
         Integer exp = null;
         String format = "Your experience was set to %1$s";
         String format2 = "You have been given %1$s experience";
         String parse = null;
 
         if(size == 1 && sender instanceof Player) {
-            p = (Player)sender;
+            p1 = (Player)sender;
             parse = args[0];
         } else if (size == 2) {
-            p = sender.getServer().getPlayer(args[0]);
+            p1 = sender.getServer().getPlayer(args[0]);
             parse = args[1];
-        } else
+        } else {
             return invalidCommand(sender, label);
+        }
 
-        if(p==null) return playerNotFound(sender);
+        if(p1==null) return playerNotFound(sender);
 
-        ExpEditor e = new ExpEditor(p);
+        ExpEditor p2 = new ExpEditor(p1);
 
-        int old_exp = e.getExp();
-        int old_lvl = e.getLevel();
+        int old_exp = p2.getExp();
+        int old_lvl = p2.getLevel();
 
         try {
-            exp = Integer.parseInt(parse);
+            String n = parse;
+            if(parse.startsWith("+")) {
+                n = parse.substring(1);
+            }
+            exp = Integer.parseInt(n);
         } catch (NumberFormatException n) {
             return notANumber(sender);
         }
 
         if(parse.startsWith("+")||parse.startsWith("-")) {
             format = String.format(format2, exp.toString());
-            sender.sendMessage("Exp:"+ exp + " + " + e.getTotalExp() + " = " + (exp+e.getTotalExp()));
-            exp += e.getTotalExp();
-        } else
+            sender.sendMessage("Exp:"+ exp + " + " + p2.getTotalExp() + " = " + (exp+p2.getTotalExp()));
+            exp += p2.getTotalExp();
+        } else {
             format = String.format(format, exp.toString());
+        }
 
-        e.setExp(exp);
+        p2.setExp(exp);
 
         // Sender console, or player is a different player
-        if(!(sender instanceof Player) || !((Player)sender).equals(p))
-            p.sendMessage(Plugin.format(ChatColor.YELLOW,format));
+        if(!(sender instanceof Player) || !((Player)sender).equals(p1)) {
+            p1.sendMessage(Plugin.format(ChatColor.YELLOW,format));
+        }
 
-        sender.sendMessage(Plugin.format("Player experience changed from "+old_lvl+"/"+old_exp+" to "+e.getLevel()+"/"+e.getExp()));
+        sender.sendMessage(Plugin.format("Player experience changed from "+old_lvl+"/"+old_exp+" to "+p2.getLevel()+"/"+p2.getExp()));
+        return true;
+    }
+
+    private boolean onReloadCommand(CommandSender sender) {
+        if(!sender.hasPermission("orbEnhance.admin")) return noPermission(sender);
+        Plugin.Config.reload();
+        sender.sendMessage(Plugin.format("Reload Complete"));
         return true;
     }
 
@@ -93,8 +111,10 @@ public class ExpCommand implements CommandExecutor {
 
             sender.sendMessage(Plugin.format("Your level: "+level));
             sender.sendMessage(Plugin.format("Experience: "+p.getExp()+"/"+p.getExpToLevel()));
-            if(Plugin.showTotal)
+
+            if(Plugin.showTotal) {
                 sender.sendMessage(Plugin.format("Total Exp : "+p.getTotalExp()));
+            }
         }
         return true;
     }
