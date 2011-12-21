@@ -49,8 +49,23 @@ public class ExpEditor {
         return (int) (getExpToLevel()*player.getExp());
     }
 
+    // This function is ugly!
     public int getTotalExp() {
-        return player.getTotalExperience();
+        int total = 0;
+        int level = player.getLevel(); // Store current level
+
+        CraftPlayer cp = (CraftPlayer) player; // CraftBukkit hax
+
+        cp.getHandle().expLevel = 0; // Set level to 0;
+
+        while(cp.getHandle().expLevel < level) { // While level less than real level
+            total+=getExpToLevel(); // Add experience to next level
+            ++cp.getHandle().expLevel; // Add a level
+        }
+
+        total+=getExp(); // Add current experience to total
+
+        return total;
     }
 
     public int getLevel() {
@@ -59,5 +74,9 @@ public class ExpEditor {
 
     public int getExpToLevel() {
         return ((CraftPlayer)player).getHandle().getExpTolevel();
+    }
+
+    private void recalcTotalExp() {
+        player.setTotalExperience(getTotalExp());
     }
 }
