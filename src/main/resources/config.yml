@@ -5,16 +5,19 @@ config:
     customExpLoss: false
     playerDelevel: true
     virtualEXP: false
+    virtualPlayerEXP: false
     showTotal: false
     expLossByTotal: false
     expBurn: 0
 monster:
+    Blaze: 10
     CaveSpider: 10
     Creeper: 10
     Enderman: 10
-    EnderDragon: 1000
+    EnderDragon: 20000
     Ghast: 10
     Giant: 10
+    MagmaCube: 10
     PigZombie: 10
     Silverfish: 10
     Skeleton: 10

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>feildmaster.controlorble</groupId>
     <artifactId>ControlORBle</artifactId>
-    <version>2.3 beta</version>
+    <version>2.4</version>
     <name>ControlORBle</name>
     <repositories>
         <repository>

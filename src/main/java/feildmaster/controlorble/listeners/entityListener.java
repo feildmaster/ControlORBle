@@ -1,19 +1,19 @@
-package feildmaster.OrbEnhance.listeners;
+package feildmaster.controlorble.listeners;
 
-import feildmaster.OrbEnhance.*;
+import feildmaster.controlorble.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class entityListener extends EntityListener {
-    private final plugin Plugin;
+    private final JavaPlugin Plugin;
 
-    public entityListener(plugin p) {
+    public entityListener(JavaPlugin p) {
         Plugin = p;
     }
 
     public void onEntityDeath(EntityDeathEvent event) {
-        event.setDroppedExp(0); // Set to 0, let plugin override later.
+        event.setDroppedExp(0); // Set to 0, let JavaPlugin override later.
 
         // Player gets special case
         if(event instanceof PlayerDeathEvent) {
@@ -22,26 +22,33 @@ public class entityListener extends EntityListener {
         }
 
         Entity entity = event.getEntity();
-        EntityDamageEvent cause = entity.getLastDamageCause();
+        Player p = getPlayer(entity.getLastDamageCause());
 
-        if(!(cause instanceof EntityDamageByEntityEvent)) return; // Not an entity kill
+        if(p == null) return; // Not a player kill
 
-        Entity damager = ((EntityDamageByEntityEvent)cause).getDamager();
+        monsterDeathHandler(event, p, getExp(entity));
+    }
 
-        if(!(damager instanceof Arrow) && !(damager instanceof Player)) return; // Not a player kill
+    private Player getPlayer(EntityDamageEvent cause) {
+        Player p = null;
+        Entity damager = null;
 
-        Player p;
+        if(cause instanceof EntityDamageByEntityEvent) {
+            damager = ((EntityDamageByEntityEvent)cause).getDamager();
+        } else {
+            return null;
+        }
 
-        // Check if arrow fired from player!
         if(damager instanceof Arrow) {
             Arrow damage_arrow = (Arrow)damager;
-            if(!(damage_arrow.getShooter() instanceof Player)) return; // Not a players arrow.
-            p = (Player)damage_arrow.getShooter();
-        } else {
+            if(damage_arrow.getShooter() instanceof Player) {
+                p = (Player)damage_arrow.getShooter();
+            }
+        } else if(damager instanceof Player) {
             p = (Player)damager;
         }
 
-        monsterDeathHandler(event, p, getExp(entity));
+        return p;
     }
 
     private int getExp(Entity entity) {
@@ -92,17 +99,32 @@ public class entityListener extends EntityListener {
         if(Plugin.expBurn > 0)
             loss -= loss * (Plugin.expBurn/100D) ;
 
-        if(loss.intValue() > 0)
-            event.setDroppedExp(loss.intValue());
+        if(loss.intValue() > 0) {
+            if(Plugin.virtualPlayerExp) {
+                p.sendMessage("You have lost "+loss.intValue()+" experience");
+
+                Player killer = getPlayer(p.getLastDamageCause());
+                if(killer != null) {
+                    killer.sendMessage(gainMessage(loss.intValue()));
+                }
+            } else {
+                event.setDroppedExp(loss.intValue());
+            }
+        }
     }
 
     private void monsterDeathHandler(EntityDeathEvent event, Player p, int exp) {
         if(Plugin.virtualExp) {
             p.giveExp(exp);
-            p.sendMessage(String.format("You have gained %1$d experience", exp));
+            p.sendMessage(gainMessage(exp));
         } else
             event.setDroppedExp(exp);
     }
+
+    private String gainMessage(int exp) {
+        return "You have gained "+exp+" experience";
+    }
+
     private int calculatePercent(DamageCause dc) {
         if(Plugin.multiLoss) {
             switch(dc) {

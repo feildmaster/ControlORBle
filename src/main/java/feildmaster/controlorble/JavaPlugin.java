@@ -1,21 +1,20 @@
-package feildmaster.OrbEnhance;
+package feildmaster.controlorble;
 
-import feildmaster.OrbEnhance.listeners.*;
-import feildmaster.OrbEnhance.commands.ExpCommand;
+import feildmaster.controlorble.listeners.*;
+import feildmaster.controlorble.commands.ExpCommand;
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class plugin extends JavaPlugin {
+public class JavaPlugin extends org.bukkit.plugin.java.JavaPlugin {
     public config Config;
     public final Map<String, Integer> expBuffer = new HashMap<String, Integer>();
 
     // Other variables
     public boolean showTotal = false;
     public boolean virtualExp = false;
-    public boolean virtualPlayerExp = false; // TODO: virtualPlayerExperience
+    public boolean virtualPlayerExp = false;
     public boolean playerDelevel = true;
     public boolean multiLoss = false;
     public boolean lossByTotal = false;

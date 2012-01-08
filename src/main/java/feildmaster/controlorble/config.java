@@ -1,12 +1,12 @@
-package feildmaster.OrbEnhance;
+package feildmaster.controlorble;
 
 import org.bukkit.util.config.Configuration;
 
 public class config {
-    private static plugin Plugin;
+    private static JavaPlugin Plugin;
     private static Configuration config;
 
-    public config(plugin p) {
+    public config(JavaPlugin p) {
         Plugin = p;
         config = Plugin.getConfiguration();
         loadConfigVars();
@@ -25,9 +25,9 @@ public class config {
 
         // Config Variables
         Plugin.virtualExp = config.getBoolean("config.virtualEXP", false);
+        Plugin.virtualPlayerExp = config.getBoolean("config.virtualPlayerEXP", false);
         Plugin.showTotal = config.getBoolean("config.showTotal", false);
         Plugin.lossByTotal = config.getBoolean("config.expLossByTotal", false);
-        //Plugin.virtualPlayerExp = config.getBoolean("config.virtualPlayerEXP", false);
         Plugin.playerDelevel = config.getBoolean("config.playerDelevel", true);
         Plugin.expBurn = getPercent("config.expBurn", 0);
         Plugin.multiLoss = config.getBoolean("config.customExpLoss", false);
@@ -57,6 +57,11 @@ public class config {
         Plugin.Spider = getExp("monster.Spider", 10);
         Plugin.Wolf = getExp("monster.Wolf", 10);
         Plugin.Zombie = getExp("monster.Zombie", 10);
+        
+        // 1.0.0 Patch
+        Plugin.EnderDragon = getExp("monster.EnderDragon", 20000);
+        Plugin.Blaze = getExp("monster.Blaze", 10);
+        Plugin.MagmaCube = getExp("monster.MagmaCube", 10);
 
         // Animals
         Plugin.Chicken = getExp("animal.Chicken", 1);
@@ -64,7 +69,7 @@ public class config {
         Plugin.Pig = getExp("animal.Pig", 1);
         Plugin.Sheep = getExp("animal.Sheep", 1);
         Plugin.Squid = getExp("animal.Squid", 1);
-        //Plugin.TamedWolf = getExp("animal.Wolf", 0);
+        Plugin.TamedWolf = getExp("animal.Wolf", 0);
     }
 
     private int getPercent(String node, int def) {

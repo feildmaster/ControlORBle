@@ -1,9 +1,11 @@
 name: ControlORBle
-main: feildmaster.OrbEnhance.plugin
-version: 2.3 beta
+main: feildmaster.controlorble.JavaPlugin
+version: 2.4
 author: feildmaster
 
 commands:
+  xp:
+    description: Override vanilla xp command
   exp:
     description: View/Change experience
   exp-reload:

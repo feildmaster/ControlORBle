@@ -1,7 +1,7 @@
-package feildmaster.OrbEnhance.commands;
+package feildmaster.controlorble.commands;
 
-import feildmaster.OrbEnhance.ExpEditor;
-import feildmaster.OrbEnhance.plugin;
+import feildmaster.controlorble.ExpEditor;
+import feildmaster.controlorble.JavaPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,9 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ExpCommand implements CommandExecutor {
-    private plugin Plugin;
+    private JavaPlugin Plugin;
 
-    public ExpCommand(plugin p) {
+    public ExpCommand(JavaPlugin p) {
         Plugin = p;
     }
 
@@ -115,7 +115,8 @@ public class ExpCommand implements CommandExecutor {
             if(Plugin.showTotal) {
                 sender.sendMessage(Plugin.format("Total Exp : "+p.getTotalExp()));
             }
-        }
+        } else
+            invalidCommand(sender, "exp");
         return true;
     }
 }

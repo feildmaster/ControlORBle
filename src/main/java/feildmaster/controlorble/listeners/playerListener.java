@@ -1,15 +1,15 @@
-package feildmaster.OrbEnhance.listeners;
+package feildmaster.controlorble.listeners;
 
-import feildmaster.OrbEnhance.ExpEditor;
-import feildmaster.OrbEnhance.plugin;
+import feildmaster.controlorble.ExpEditor;
+import feildmaster.controlorble.JavaPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class playerListener extends PlayerListener {
-    private plugin Plugin;
+    private JavaPlugin Plugin;
 
-    public playerListener(plugin plugin) {
+    public playerListener(JavaPlugin plugin) {
         Plugin = plugin;
     }
 
