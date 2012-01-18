@@ -52,8 +52,12 @@ public class entityListener extends EntityListener {
     }
 
     private int getExp(Entity entity) {
+        // 1.0.0 Monsters
+        if (entity instanceof EnderDragon) return Plugin.EnderDragon;
+        if (entity instanceof Blaze) return Plugin.Blaze;
+        if (entity instanceof MagmaCube) return Plugin.MagmaCube; // Before Slime
         // Monsters
-        if (entity instanceof CaveSpider) return Plugin.CaveSpider;
+        if (entity instanceof CaveSpider) return Plugin.CaveSpider; // Before Spider
         if (entity instanceof Creeper) return Plugin.Creeper;
         if (entity instanceof Enderman) return Plugin.Enderman;
         if (entity instanceof Ghast) return Plugin.Ghast;
@@ -65,10 +69,6 @@ public class entityListener extends EntityListener {
         if (entity instanceof Spider) return Plugin.Spider;
         if (entity instanceof Wolf) return ((Wolf)entity).isTamed()?Plugin.TamedWolf:Plugin.Wolf;
         if (entity instanceof Zombie) return Plugin.Zombie;
-        // 1.0.0 Monsters
-        if (entity instanceof EnderDragon) return Plugin.EnderDragon;
-        if (entity instanceof Blaze) return Plugin.Blaze;
-        if (entity instanceof MagmaCube) return Plugin.MagmaCube;
         // Animals
         if (entity instanceof Chicken) return Plugin.Chicken;
         if (entity instanceof Cow) return Plugin.Cow;
