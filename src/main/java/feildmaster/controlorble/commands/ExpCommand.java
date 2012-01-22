@@ -107,14 +107,13 @@ public class ExpCommand implements CommandExecutor {
     private boolean yourLevel(CommandSender sender) {
         if(sender instanceof Player) {
             Editor p = new Editor((Player)sender);
-
             int level = p.getLevel();
 
             sender.sendMessage(Plugin.format("Your level: "+level));
             sender.sendMessage(Plugin.format("Experience: "+p.getExp()+"/"+p.getExpToLevel()));
 
             if(Plugin.showTotal) {
-                sender.sendMessage(Plugin.format("Total Exp : "+p.getTotalExp()));
+                sender.sendMessage(Plugin.format("Total Exp : "+p.getTotalExp(true)));
             }
         } else
             invalidCommand(sender, "exp");

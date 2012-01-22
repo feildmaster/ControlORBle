@@ -7,10 +7,10 @@ import org.bukkit.event.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 
-public class entityListener implements Listener {
+public class OrbListener implements Listener {
     private final JavaPlugin Plugin;
 
-    public entityListener(JavaPlugin p) {
+    public OrbListener(JavaPlugin p) {
         Plugin = p;
     }
 
@@ -41,14 +41,10 @@ public class entityListener implements Listener {
     }
 
     private Player getPlayer(EntityDamageEvent cause) {
-        Player p = null;
-        Entity damager = null;
+        if(!(cause instanceof EntityDamageByEntityEvent)) return null;
 
-        if(cause instanceof EntityDamageByEntityEvent) {
-            damager = ((EntityDamageByEntityEvent)cause).getDamager();
-        } else {
-            return null;
-        }
+        Player p = null;
+        Entity damager = ((EntityDamageByEntityEvent)cause).getDamager();
 
         if(damager instanceof Arrow) {
             Arrow damage_arrow = (Arrow)damager;
@@ -93,12 +89,13 @@ public class entityListener implements Listener {
     private void playerDeathHandler(PlayerDeathEvent event) {
         Player p = (Player)event.getEntity();
         Editor e = new Editor(p);
-        Double loss = (Plugin.lossByTotal?
-                e.getTotalExp():
-                (e.getLevel()*10+10)) // This is wrong...
-                    *(calculatePercent(p.getLastDamageCause()==null?
-                      EntityDamageEvent.DamageCause.CUSTOM:
-                      p.getLastDamageCause().getCause())/100D);
+        e.recalcTotalExp();
+        Double loss = (Plugin.lossByTotal?e.getTotalExp():e.getExpToLevel()) *
+                (calculatePercent(p.getLastDamageCause()==null?EntityDamageEvent.DamageCause.CUSTOM:p.getLastDamageCause().getCause())/100D);
+
+        if(p.hasPermission("orbEnhance.KeepExp")) { // Keep all experience
+            loss = 0D;
+        }
 
         if(!Plugin.playerDelevel && loss > e.getExp()) {
             loss = (double) e.getExp();
@@ -112,7 +109,7 @@ public class entityListener implements Listener {
             loss = (double) e.getTotalExp();
         }
 
-        if(Plugin.expBurn > 0)
+        if(loss.intValue() > 0 && Plugin.expBurn > 0)
             loss -= loss * (Plugin.expBurn/100D) ;
 
         if(loss.intValue() > 0) {
