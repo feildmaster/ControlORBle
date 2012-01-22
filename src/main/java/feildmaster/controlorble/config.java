@@ -80,7 +80,7 @@ public class config {
 
     private int getExp(String node, int def) {
         int value = config.getInt(node, def);
-        if(value < 0) value = setProperty(node, def);
+        if(value < -1000) value = setProperty(node, def);
         return value;
     }
 
