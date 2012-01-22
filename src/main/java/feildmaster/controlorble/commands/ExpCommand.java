@@ -1,6 +1,6 @@
 package feildmaster.controlorble.commands;
 
-import feildmaster.controlorble.ExpEditor;
+import lib.feildmaster.ExpEditor.Editor;
 import feildmaster.controlorble.JavaPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -44,7 +44,7 @@ public class ExpCommand implements CommandExecutor {
 
         if(p1==null) return playerNotFound(sender);
 
-        ExpEditor p2 = new ExpEditor(p1);
+        Editor p2 = new Editor(p1);
 
         int old_exp = p2.getExp();
         int old_lvl = p2.getLevel();
@@ -61,8 +61,9 @@ public class ExpCommand implements CommandExecutor {
 
         if(parse.startsWith("+")||parse.startsWith("-")) {
             format = String.format(format2, exp.toString());
-            sender.sendMessage("Exp:"+ exp + " + " + p2.getTotalExp() + " = " + (exp+p2.getTotalExp()));
-            exp += p2.getTotalExp();
+            // Is this supposed to be here...?
+            //sender.sendMessage("Exp: "+ exp + " + " + p2.getTotalExp(true) + " = " + (exp+p2.getTotalExp()));
+            exp += p2.getTotalExp(true);
         } else {
             format = String.format(format, exp.toString());
         }
@@ -105,7 +106,7 @@ public class ExpCommand implements CommandExecutor {
 
     private boolean yourLevel(CommandSender sender) {
         if(sender instanceof Player) {
-            ExpEditor p = new ExpEditor((Player)sender);
+            Editor p = new Editor((Player)sender);
 
             int level = p.getLevel();
 
