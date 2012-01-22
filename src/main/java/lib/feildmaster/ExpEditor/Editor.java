@@ -1,13 +1,12 @@
-package feildmaster.controlorble;
+package lib.feildmaster.ExpEditor;
 
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public class ExpEditor {
+public class Editor {
     private final Player player;
 
-    public ExpEditor(Player player) {
-        this.player = player;
+    public Editor(Player p) {
+        player = p;
     }
 
     // Handle experience
@@ -22,8 +21,6 @@ public class ExpEditor {
     }
 
     public void giveExp(int exp) {
-        if(exp <= 0) return;
-
         while(exp > 0) {
             int xp = getExpToLevel()-getExp();
             if(xp > exp)
@@ -38,19 +35,30 @@ public class ExpEditor {
     }
 
     public void takeExp(int exp, boolean fromTotal) {
-        if(exp <= 0) return;
+        int xp = getTotalExp();
 
-        // Now lets make a better takeExp
-        setExp(fromTotal?getTotalExp():getExp()-exp);
+        if (fromTotal) {
+            xp -= exp;
+        } else {
+            int m = getExp() - exp;
+            if(m < 0) m = 0;
+            xp -= getExp() + m;
+        }
+
+        setExp(xp);
     }
 
     // Get experience functions
     public int getExp() {
-        return (int) (getExpToLevel()*player.getExp());
+        return (int) (getExpToLevel() * player.getExp());
     }
 
     // This function is ugly!
     public int getTotalExp() {
+        return getTotalExp(false);
+    }
+    public int getTotalExp(boolean recalc) {
+        if (recalc) recalcTotalExp();
         return player.getTotalExperience();
     }
 
@@ -59,25 +67,18 @@ public class ExpEditor {
     }
 
     public int getExpToLevel() {
-        return ((CraftPlayer)player).getHandle().getExpTolevel();
+        return getExpToLevel(getLevel());
+    }
+
+    public int getExpToLevel(int i) {
+        return 7 + (i * 7 >> 1);
     }
 
     public void recalcTotalExp() {
-        int total = 0;
-
-        int level = player.getLevel(); // Store current level
-
-        CraftPlayer cp = (CraftPlayer) player; // CraftBukkit hax
-
-        cp.getHandle().expLevel = 0; // Set level to 0;
-
-        while(cp.getHandle().expLevel < level) { // While level less than real level
-            total+=getExpToLevel(); // Add experience to next level
-            ++cp.getHandle().expLevel; // Add a level
+        int total = getExp();
+        for(int i = 0; i < player.getLevel(); i++) {
+            total += getExpToLevel(i);
         }
-
-        total+=getExp(); // Add current experience to total
-
         player.setTotalExperience(total);
     }
 }
