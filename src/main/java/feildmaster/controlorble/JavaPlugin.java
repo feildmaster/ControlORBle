@@ -61,7 +61,7 @@ public class JavaPlugin extends org.bukkit.plugin.java.JavaPlugin {
 
     public void onEnable() {
         // Register events
-        getServer().getPluginManager().registerEvents(new entityListener(this), this);
+        getServer().getPluginManager().registerEvents(new OrbListener(this), this);
 
         // Register commands
         ExpCommand exp = new ExpCommand(this);

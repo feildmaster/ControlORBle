@@ -15,3 +15,6 @@ permissions:
   orbEnhance.admin:
     default: op
     description: Allows player to change players experience
+  orbEnhance.KeepExp:
+    default: false
+    description: Allows individual players to keep all experience
