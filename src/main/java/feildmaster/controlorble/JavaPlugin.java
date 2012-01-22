@@ -5,7 +5,6 @@ import feildmaster.controlorble.commands.ExpCommand;
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.ChatColor;
-import org.bukkit.event.Event;
 
 public class JavaPlugin extends org.bukkit.plugin.java.JavaPlugin {
     public config Config;
@@ -58,14 +57,11 @@ public class JavaPlugin extends org.bukkit.plugin.java.JavaPlugin {
     public int Squid = 1;
     public int TamedWolf = 0; // Not configurable (yet)
 
-    public void onDisable() {
-        getServer().getLogger().info(String.format("[%1$s] v%2$s Disabled!",getDescription().getName(), getDescription().getVersion()));
-    }
+    public void onDisable() {}
 
     public void onEnable() {
         // Register events
-        getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DEATH, new entityListener(this), Event.Priority.Highest, this);
-        getServer().getPluginManager().registerEvent(Event.Type.PLAYER_RESPAWN, new playerListener(this), Event.Priority.Highest, this);
+        getServer().getPluginManager().registerEvents(new entityListener(this), this);
 
         // Register commands
         ExpCommand exp = new ExpCommand(this);
@@ -75,9 +71,6 @@ public class JavaPlugin extends org.bukkit.plugin.java.JavaPlugin {
 
         // Load Config
         Config = new config(this);
-
-        // All done
-        getServer().getLogger().info(String.format("[%1$s] v%2$s Enabled!",getDescription().getName(), getDescription().getVersion()));
     }
 
 

@@ -1,17 +1,28 @@
 package feildmaster.controlorble.listeners;
 
+import lib.feildmaster.ExpEditor.Editor;
 import feildmaster.controlorble.*;
 import org.bukkit.entity.*;
+import org.bukkit.event.*;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.*;
 
-public class entityListener extends EntityListener {
+public class entityListener implements Listener {
     private final JavaPlugin Plugin;
 
     public entityListener(JavaPlugin p) {
         Plugin = p;
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        if(Plugin.expBuffer.containsKey(event.getPlayer().getName())) {
+            Plugin.getServer().getScheduler().scheduleSyncDelayedTask(Plugin, new playerContainer(event.getPlayer(), Plugin.expBuffer.get(event.getPlayer().getName())), 5);
+            Plugin.expBuffer.remove(event.getPlayer().getName());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDeath(EntityDeathEvent event) {
         event.setDroppedExp(0); // Set to 0, let JavaPlugin override later.
 
@@ -81,8 +92,13 @@ public class entityListener extends EntityListener {
 
     private void playerDeathHandler(PlayerDeathEvent event) {
         Player p = (Player)event.getEntity();
-        ExpEditor e = new ExpEditor(p);
-        Double loss = (Plugin.lossByTotal?e.getTotalExp():(e.getLevel()*10+10))*(calculatePercent(p.getLastDamageCause()==null?DamageCause.CUSTOM:p.getLastDamageCause().getCause())/100D);
+        Editor e = new Editor(p);
+        Double loss = (Plugin.lossByTotal?
+                e.getTotalExp():
+                (e.getLevel()*10+10)) // This is wrong...
+                    *(calculatePercent(p.getLastDamageCause()==null?
+                      EntityDamageEvent.DamageCause.CUSTOM:
+                      p.getLastDamageCause().getCause())/100D);
 
         if(!Plugin.playerDelevel && loss > e.getExp()) {
             loss = (double) e.getExp();
@@ -125,7 +141,7 @@ public class entityListener extends EntityListener {
         return "You have gained "+exp+" experience";
     }
 
-    private int calculatePercent(DamageCause dc) {
+    private int calculatePercent(EntityDamageEvent.DamageCause dc) {
         if(Plugin.multiLoss) {
             switch(dc) {
                 // TODO: Suffocation and Fall percent
@@ -153,6 +169,20 @@ public class entityListener extends EntityListener {
             }
         } else {
             return Plugin.expLoss;
+        }
+    }
+
+    public class playerContainer implements Runnable {
+        private Player player;
+        private int exp;
+
+        public playerContainer(Player player, int exp) {
+            this.player = player;
+            this.exp = exp;
+        }
+
+        public void run() {
+            new Editor(player).giveExp(exp);
         }
     }
 }
