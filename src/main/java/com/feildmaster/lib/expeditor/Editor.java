@@ -1,4 +1,4 @@
-package lib.feildmaster.ExpEditor;
+package com.feildmaster.lib.expeditor;
 
 import org.bukkit.entity.Player;
 

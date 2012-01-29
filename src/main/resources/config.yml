@@ -3,6 +3,7 @@
 
 config:
     customExpLoss: false
+    customBlockExp: false
     playerDelevel: true
     virtualEXP: false
     virtualPlayerEXP: false
@@ -43,3 +44,5 @@ expLoss:
     Suicide: 0
     TnT: 0
     Void: 0
+blockExp:
+    Basic: 0

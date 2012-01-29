@@ -1,7 +1,7 @@
-package feildmaster.controlorble.commands;
+package com.feildmaster.controlorble.commands;
 
-import lib.feildmaster.ExpEditor.Editor;
-import feildmaster.controlorble.JavaPlugin;
+import com.feildmaster.lib.expeditor.Editor;
+import com.feildmaster.controlorble.JavaPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,10 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ExpCommand implements CommandExecutor {
-    private JavaPlugin Plugin;
+    private JavaPlugin plugin;
 
     public ExpCommand(JavaPlugin p) {
-        Plugin = p;
+        plugin = p;
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -72,35 +72,36 @@ public class ExpCommand implements CommandExecutor {
 
         // Sender console, or player is a different player
         if(!(sender instanceof Player) || !((Player)sender).equals(p1)) {
-            p1.sendMessage(Plugin.format(ChatColor.YELLOW,format));
+            p1.sendMessage(plugin.format(ChatColor.YELLOW,format));
         }
 
-        sender.sendMessage(Plugin.format("Player experience changed from "+old_lvl+"/"+old_exp+" to "+p2.getLevel()+"/"+p2.getExp()));
+        sender.sendMessage(plugin.format("Player experience changed from "+old_lvl+"/"+old_exp+" to "+p2.getLevel()+"/"+p2.getExp()));
         return true;
     }
 
     private boolean onReloadCommand(CommandSender sender) {
         if(!sender.hasPermission("orbEnhance.admin")) return noPermission(sender);
-        Plugin.Config.reload();
-        sender.sendMessage(Plugin.format("Reload Complete"));
+        plugin.getConfig().load();
+        plugin.checkConfig();
+        sender.sendMessage(plugin.format("Reload Complete"));
         return true;
     }
 
     private boolean noPermission(CommandSender sender) {
-        sender.sendMessage(Plugin.format("You do not have permission to do that!"));
+        sender.sendMessage(plugin.format("You do not have permission to do that!"));
         return true;
     }
     private boolean playerNotFound(CommandSender sender) {
-        sender.sendMessage(Plugin.format("Player not found"));
+        sender.sendMessage(plugin.format("Player not found"));
         return true;
     }
     private boolean invalidCommand(CommandSender sender, String label) {
-        sender.sendMessage(Plugin.format("Invalid syntax"));
-        sender.sendMessage(Plugin.format("/"+label+" [player] [+|-]{exp}"));
+        sender.sendMessage(plugin.format("Invalid syntax"));
+        sender.sendMessage(plugin.format("/"+label+" [player] [+|-]{exp}"));
         return true;
     }
     private boolean notANumber(CommandSender sender) {
-        sender.sendMessage(Plugin.format("Not a number"));
+        sender.sendMessage(plugin.format("Not a number"));
         return true;
     }
 
@@ -109,11 +110,11 @@ public class ExpCommand implements CommandExecutor {
             Editor p = new Editor((Player)sender);
             int level = p.getLevel();
 
-            sender.sendMessage(Plugin.format("Your level: "+level));
-            sender.sendMessage(Plugin.format("Experience: "+p.getExp()+"/"+p.getExpToLevel()));
+            sender.sendMessage(plugin.format("Your level: "+level));
+            sender.sendMessage(plugin.format("Experience: "+p.getExp()+"/"+p.getExpToLevel()));
 
-            if(Plugin.showTotal) {
-                sender.sendMessage(Plugin.format("Total Exp : "+p.getTotalExp(true)));
+            if(plugin.getConfig().getBoolean("config.showTotal")) {
+                sender.sendMessage(plugin.format("Total Exp : "+p.getTotalExp(true)));
             }
         } else
             invalidCommand(sender, "exp");

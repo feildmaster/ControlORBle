@@ -1,6 +1,6 @@
-name: ControlORBle
-main: feildmaster.controlorble.JavaPlugin
-version: 2.5 Beta
+name: ${name}
+main: com.feildmaster.controlorble.JavaPlugin
+version: ${version}
 author: feildmaster
 
 commands:
