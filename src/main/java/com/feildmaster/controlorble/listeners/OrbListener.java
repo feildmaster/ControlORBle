@@ -197,6 +197,7 @@ public class OrbListener implements Listener {
         Object o = plugin.getConfig().get(key);
         if (o instanceof Integer) {
             int exp = plugin.getConfig().getExp(key);
+            if(exp < 0) exp = 0;
             PlayerBreakBlockDropOrbEvent e = new PlayerBreakBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
             plugin.getServer().getPluginManager().callEvent(e);
             ExperienceOrb orb = event.getBlock().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
