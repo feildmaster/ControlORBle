@@ -7,6 +7,7 @@ import org.bukkit.plugin.Plugin;
 public class ConfigurationWrapper extends EnhancedConfiguration {
     public ConfigurationWrapper(Plugin plugin) {
         super(plugin);
+        loadDefaults(); // Load the defaults. :D
         populateBlocks();
     }
 
@@ -32,7 +33,7 @@ public class ConfigurationWrapper extends EnhancedConfiguration {
 
     private void populateBlocks() {
         for(Material m : Material.values()) {
-            if(m.isBlock()) {
+            if(m.isBlock() && m != Material.AIR) {
                 getDefaults().set("blockExp."+m.toString(), 0);
             }
         }

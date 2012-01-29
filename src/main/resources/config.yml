@@ -3,10 +3,10 @@
 
 config:
     customExpLoss: false
-    customBlockExp: false
     playerDelevel: true
     virtualEXP: false
     virtualPlayerEXP: false
+    virtualBlockEXP: false
     showTotal: false
     expLossByTotal: false
     expBurn: 0

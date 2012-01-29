@@ -188,20 +188,21 @@ public class OrbListener implements Listener {
 
     @EventHandler(priority=EventPriority.MONITOR)
     public void blockBreak(BlockBreakEvent event) {
-        String key;
-        if(plugin.getConfig().getBoolean("customBlockExp")) {
-            key = "blockExp."+event.getBlock().getType().toString();
-        } else {
-            key = "blockExp.Basic";
-        }
+        String key = "blockExp."+event.getBlock().getType().toString();
         Object o = plugin.getConfig().get(key);
         if (o instanceof Integer) {
             int exp = plugin.getConfig().getExp(key);
             if(exp < 0) exp = 0;
             PlayerBreakBlockDropOrbEvent e = new PlayerBreakBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
             plugin.getServer().getPluginManager().callEvent(e);
-            ExperienceOrb orb = event.getBlock().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
-            orb.setExperience(e.getExp());
+            if(e.getExp() < 1) return;
+            if (plugin.getConfig().getBoolean("virtualBlockEXP")) {
+                event.getPlayer().giveExp(e.getExp());
+                event.getPlayer().sendMessage(gainMessage(e.getExp()));
+            } else {
+                ExperienceOrb orb = event.getBlock().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
+                orb.setExperience(e.getExp());
+            }
         }
     }
 }
