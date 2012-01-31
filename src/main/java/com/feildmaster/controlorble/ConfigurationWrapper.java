@@ -9,6 +9,10 @@ public class ConfigurationWrapper extends EnhancedConfiguration {
         super(plugin);
         loadDefaults(); // Load the defaults. :D
         populateBlocks();
+        if(get("blockExp.Basic", "") != "") { // Blah fix for now.
+            set("blockExp.Basic", null);
+            save();
+        }
     }
 
     public int getPercent(String node) {

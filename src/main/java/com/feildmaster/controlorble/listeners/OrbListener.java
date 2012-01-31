@@ -196,7 +196,7 @@ public class OrbListener implements Listener {
             PlayerBreakBlockDropOrbEvent e = new PlayerBreakBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
             plugin.getServer().getPluginManager().callEvent(e);
             if(e.getExp() < 1) return;
-            if (plugin.getConfig().getBoolean("virtualBlockEXP")) {
+            if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
                 event.getPlayer().giveExp(e.getExp());
                 event.getPlayer().sendMessage(gainMessage(e.getExp()));
             } else {
