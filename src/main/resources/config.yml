@@ -7,6 +7,7 @@ config:
     virtualEXP: false
     virtualPlayerEXP: false
     virtualBlockEXP: false
+    hideVirtualEXPMessage: false
     showTotal: false
     expLossByTotal: false
     expBurn: 0

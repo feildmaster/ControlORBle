@@ -9,6 +9,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 
+// TODO: Clean "plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")" into a common function
+// experienceMessage(player, amount)
 public class OrbListener implements Listener {
     private final JavaPlugin plugin;
 
@@ -62,7 +64,10 @@ public class OrbListener implements Listener {
 
     private int getExp(Entity entity) {
         // 1.0.0 Monsters
-        if (entity instanceof EnderDragon) return plugin.getConfig().getExp("monster.EnderDragon");
+        if (entity instanceof EnderDragon) {
+            System.out.println("Dragon Death");
+            return plugin.getConfig().getExp("monster.EnderDragon");
+        }
         if (entity instanceof Blaze) return plugin.getConfig().getExp("monster.Blaze");
         if (entity instanceof MagmaCube) return plugin.getConfig().getExp("monster.MagmaCube"); // Before Slime
         // Monsters
@@ -85,6 +90,7 @@ public class OrbListener implements Listener {
         if (entity instanceof Sheep) return plugin.getConfig().getExp("animal.Sheep");
         if (entity instanceof Squid) return plugin.getConfig().getExp("animal.Squid");
 
+        System.out.println("Creature \""+entity+"\" not found. 0 Experience.");
         return 0;
     }
 
@@ -116,10 +122,12 @@ public class OrbListener implements Listener {
 
         if(loss.intValue() > 0) {
             if(plugin.getConfig().getBoolean("config.virtualPlayerEXP")) {
-                p.sendMessage("You have lost "+loss.intValue()+" experience");
+                if(!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
+                    p.sendMessage("You have lost "+loss.intValue()+" experience");
+                }
 
                 Player killer = getPlayer(p.getLastDamageCause());
-                if(killer != null) {
+                if(killer != null && !plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
                     killer.sendMessage(gainMessage(loss.intValue()));
                 }
             } else {
@@ -131,7 +139,9 @@ public class OrbListener implements Listener {
     private void monsterDeathHandler(EntityDeathEvent event, Player p, int exp) {
         if (plugin.getConfig().getBoolean("config.virtualEXP")) {
             p.giveExp(exp);
-            p.sendMessage(gainMessage(exp));
+            if(!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
+                p.sendMessage(gainMessage(exp));
+            }
         } else {
             event.setDroppedExp(exp);
         }
@@ -198,7 +208,9 @@ public class OrbListener implements Listener {
             if(e.getExp() < 1) return;
             if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
                 event.getPlayer().giveExp(e.getExp());
-                event.getPlayer().sendMessage(gainMessage(e.getExp()));
+                if(!plugin.getConfig().getBoolean("config.hideVirtualExpMessage")) {
+                    event.getPlayer().sendMessage(gainMessage(e.getExp()));
+                }
             } else {
                 ExperienceOrb orb = event.getBlock().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
                 orb.setExperience(e.getExp());
