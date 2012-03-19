@@ -1,16 +1,19 @@
 package com.feildmaster.controlorble;
 
 import com.feildmaster.controlorble.listeners.*;
-import com.feildmaster.controlorble.commands.ExpCommand;
+import com.feildmaster.controlorble.commands.*;
 import com.feildmaster.lib.configuration.PluginWrapper;
-import java.util.HashMap;
-import java.util.Map;
+import com.feildmaster.lib.debug.Debugger;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class JavaPlugin extends PluginWrapper {
-    public final Map<String, Integer> expBuffer = new HashMap<String, Integer>();
+    private boolean debugerEnabled;
+    private ConfigurationWrapper config;
 
     public void onEnable() {
+        debugerEnabled = getServer().getPluginManager().getPlugin("debuger") != null;
+
         // Register events
         getServer().getPluginManager().registerEvents(new OrbListener(this), this);
 
@@ -21,10 +24,20 @@ public class JavaPlugin extends PluginWrapper {
         getServer().getPluginCommand("exp").setExecutor(exp);
         getServer().getPluginCommand("exp-reload").setExecutor(exp);
         getServer().getPluginCommand("xp").setExecutor(exp);
-    }
-    public void onDisable() {}
+        getServer().getPluginCommand("exp-set").setExecutor(new ExpSet(this));
 
-    private ConfigurationWrapper config;
+        debug("Enable Complete");
+    }
+
+    public void onDisable() {
+        if (getConfig().isModified()) {
+            debug("Saving Configuration");
+            if (!getConfig().save()) {
+                debug(getConfig().getLastException().getCause().getMessage());
+            }
+        }
+    }
+
     public ConfigurationWrapper getConfig() {
         if(config == null) {
             config = new ConfigurationWrapper(this);
@@ -33,8 +46,20 @@ public class JavaPlugin extends PluginWrapper {
     }
 
     public void checkConfig() {
-        if(!getConfig().checkDefaults() || !getConfig().fileExists()) {
+        if(getConfig().needsUpdate()) {
+            debug("Saving Default Config");
             saveDefaultConfig();
+        }
+    }
+
+    public void debug(String message) {
+        debug(null, message);
+    }
+    public void debug(Player player, String message) {
+        if(debugerEnabled) {
+            Debugger.debug(player, message, this);
+        } else if (getConfig().getBoolean("config.debug")) {
+            getLogger().info(message);
         }
     }
 
@@ -42,6 +67,6 @@ public class JavaPlugin extends PluginWrapper {
         return format(ChatColor.DARK_AQUA, string);
     }
     public String format(ChatColor color, String string) {
-        return String.format(color+"[ControlORBle] %1$s", string);
+        return String.format(color+"[ControlORBle] %s", string);
     }
 }

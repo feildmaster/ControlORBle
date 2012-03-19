@@ -10,8 +10,13 @@ commands:
     description: View/Change experience
   exp-reload:
     description: Allows reload of exp config
+  exp-set:
+    description: set experience values in game
 
 permissions:
+  orbEnhance.modifyExp:
+    default: op
+    description: Allows modification of experience values
   orbEnhance.admin:
     default: op
     description: Allows player to change players experience

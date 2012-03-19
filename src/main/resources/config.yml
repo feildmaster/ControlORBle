@@ -3,6 +3,7 @@
 
 config:
     customExpLoss: false
+    debug: false
     playerDelevel: true
     virtualEXP: false
     virtualPlayerEXP: false
@@ -11,6 +12,10 @@ config:
     showTotal: false
     expLossByTotal: false
     expBurn: 0
+stopMonsterEXP:
+    monsterSpawner: false
+multipliers:
+    monsterEXP: 1
 monster:
     Blaze: 10
     CaveSpider: 10
@@ -30,12 +35,18 @@ monster:
 animal:
     Chicken: 1
     Cow: 1
+    IronGolem: 0
+    Ocelot: 0
+    OcelotBaby: 0
+    OcelotTame: 0
+    OcelotTameBaby: 0
     Pig: 1
+    Snowman: 1
     Sheep: 1
     Squid: 1
-    Wolf: 0
+    tameWolf: 0
 expLoss:
-    Basic: 0
+    Basic: 10
     Contact: 0
     Drown: 0
     Fire: 0

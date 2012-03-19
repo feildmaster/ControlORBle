@@ -13,6 +13,7 @@ public class ExpCommand implements CommandExecutor {
 
     public ExpCommand(JavaPlugin p) {
         plugin = p;
+        plugin.debug("Registering /exp commands");
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

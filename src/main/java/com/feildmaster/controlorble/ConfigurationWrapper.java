@@ -9,9 +9,14 @@ public class ConfigurationWrapper extends EnhancedConfiguration {
         super(plugin);
         loadDefaults(); // Load the defaults. :D
         populateBlocks();
+
         if(get("blockExp.Basic", "") != "") { // Blah fix for now.
             set("blockExp.Basic", null);
-            save();
+        }
+
+        if(get("animal.Wolf", "") != "") { // Blah fix for now.
+            set("animal.tameWolf", get("animal.Wolf"));
+            set("animal.Wolf", null);
         }
     }
 
@@ -23,6 +28,12 @@ public class ConfigurationWrapper extends EnhancedConfiguration {
             value = def;
         }
         return value;
+    }
+
+    public int getMultiplier(String type) {
+        int i = getInt("multipliers."+type);
+        if (i < 0) i = 1;
+        return i;
     }
 
     public int getExp(String node) {
