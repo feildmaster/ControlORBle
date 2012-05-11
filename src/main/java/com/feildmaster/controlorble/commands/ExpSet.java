@@ -27,32 +27,30 @@ public class ExpSet implements CommandExecutor {
         boolean set = false;
 
         for (String key : plugin.getConfig().getKeys(false)) {
-            if (set) {
-                break;
+            Object o = plugin.getConfig().get(key);
+
+            if (!(o instanceof ConfigurationSection)) {
+                continue;
             }
-            ConfigurationSection section = plugin.getConfig().getConfigurationSection(key);
+
+            ConfigurationSection section = (ConfigurationSection) o;
+
             if (section.contains(type)) {
                 String fullKey = key+"."+type;
                 Object def = plugin.getConfig().getDefaults().get(fullKey);
-                plugin.debug(fullKey+": "+def);
-                if (def instanceof Integer) {
-                    try {
-                        plugin.getConfig().set(fullKey, Integer.parseInt(value));
-                        sender.sendMessage(fullKey+" set to "+plugin.getConfig().get(fullKey));
-                    } catch (Exception e) {
-                        sender.sendMessage("Setting value \""+key+"."+type+": "+value+"\" failed. (Not a number)");
-                    } finally {
-                        set = true;
-                    }
-                } else if (def instanceof Boolean) {
-                    try {
-                        plugin.getConfig().set(fullKey, Boolean.parseBoolean(value));
-                        sender.sendMessage(fullKey+" set to "+plugin.getConfig().get(fullKey));
-                    } catch (Exception e) {
-                        sender.sendMessage("Setting value \""+key+"."+type+": "+value+"\" failed. (Not true/false)");
-                    } finally {
-                        set = true;
-                    }
+                boolean Int = def instanceof Integer;
+                boolean Bool = def instanceof Boolean;
+                if (!Int && !Bool) {
+                    continue;
+                }
+                try {
+                    section.set(type, (Int ? Integer.parseInt(value) : Boolean.parseBoolean(value)));
+                    sender.sendMessage(fullKey+" set to "+section.get(type));
+                } catch (Exception e) {
+                    sender.sendMessage("Setting value \""+fullKey+": "+value+"\" failed. (Not " + (Int ? "a number)" : "true/false)"));
+                } finally {
+                    set = true;
+                    break;
                 }
             }
         }

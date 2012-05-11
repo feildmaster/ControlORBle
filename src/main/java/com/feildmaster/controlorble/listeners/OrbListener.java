@@ -108,7 +108,7 @@ public class OrbListener implements Listener {
     }
 
     private int getExp(Entity entity) {
-        plugin.debug("Getting Experience from "+entity+" death");
+        plugin.debug("Getting Experience from " + entity.getType() + " death");
         // 1.2 Creatures
         if (entity instanceof IronGolem) {
             return plugin.getConfig().getExp("animal.IronGolem");
@@ -166,7 +166,7 @@ public class OrbListener implements Listener {
         if (entity instanceof Sheep) return plugin.getConfig().getExp("animal.Sheep");
         if (entity instanceof Squid) return plugin.getConfig().getExp("animal.Squid");
 
-        plugin.debug("\""+entity+"\" not found. 0 Experience.");
+        plugin.debug("\"" + entity.getType() + "\" not found. 0 Experience.");
         return 0;
     }
 
@@ -241,7 +241,7 @@ public class OrbListener implements Listener {
             }
         }
 
-        plugin.debug(event.getEntity() + " died for " + exp + " exp");
+        plugin.debug(event.getEntity().getType() + " died for " + exp + " exp");
     }
 
     private String gainMessage(Number exp) {
@@ -276,23 +276,6 @@ public class OrbListener implements Listener {
             }
         } else {
             return plugin.getConfig().getPercent("expLoss.Basic");
-        }
-    }
-
-    public class playerContainer implements Runnable {
-        private Player player;
-        private int exp;
-
-        public playerContainer(Player player, int exp) {
-            this.player = player;
-            this.exp = exp;
-
-            plugin.debug(player+" will respawn with "+exp+" exp");
-        }
-
-        public void run() {
-            plugin.debug("Giving "+player+" "+exp+" exp");
-            new Editor(player).giveExp(exp);
         }
     }
 
