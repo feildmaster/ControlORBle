@@ -1,10 +1,8 @@
 package com.feildmaster.controlorble.event;
 
 import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
-public class DropOrbEvent extends Event {
-    private static HandlerList handlers = new HandlerList();
+public abstract class DropOrbEvent extends Event {
     private int exp;
 
     public DropOrbEvent(int value) {
@@ -28,9 +26,5 @@ public class DropOrbEvent extends Event {
     public void setExp(int value) {
         if(value < 0) return;
         exp = value;
-    }
-
-    public HandlerList getHandlers() {
-        return handlers;
     }
 }
