@@ -2,21 +2,24 @@ package com.feildmaster.controlorble;
 
 import com.feildmaster.lib.configuration.EnhancedConfiguration;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 
 public class ConfigurationWrapper extends EnhancedConfiguration {
     public ConfigurationWrapper(Plugin plugin) {
         super(plugin);
         loadDefaults(); // Load the defaults. :D
-        populateBlocks();
-
-        if(get("blockExp.Basic", "") != "") { // Blah fix for now.
-            set("blockExp.Basic", null);
+        populateDefaultBlocks();
+        // Update Remove in 3.0
+        updateBlockValues(); // This updates old configuration to the new configuration
+        // Remove in 3.0
+        if(get("blockExp.Basic", "") != "") {
+            unset("blockExp.Basic");
         }
-
-        if(get("animal.Wolf", "") != "") { // Blah fix for now.
+        // Remove in 3.0
+        if(get("animal.Wolf", "") != "") {
             set("animal.tameWolf", get("animal.Wolf"));
-            set("animal.Wolf", null);
+            unset("animal.Wolf");
         }
     }
 
@@ -46,11 +49,24 @@ public class ConfigurationWrapper extends EnhancedConfiguration {
         return value;
     }
 
-    private void populateBlocks() {
+    private void populateDefaultBlocks() {
         for(Material m : Material.values()) {
             if(m.isBlock() && m != Material.AIR) {
-                getDefaults().set("blockExp."+m.toString(), 0);
+                String key = "blockExp." + m.toString();
+                getDefaults().set(key + ".place", 0);
+                getDefaults().set(key + ".break", 0);
             }
+        }
+    }
+
+    // This function updates old values to new config
+    private void updateBlockValues() {
+        ConfigurationSection section = this.getConfigurationSection("blockExp");
+        for (String key : section.getKeys(false)) {
+            if (section.isConfigurationSection(key)) {
+                continue;
+            }
+            this.set("blockExp." + key + ".break", section.get(key));
         }
     }
 }

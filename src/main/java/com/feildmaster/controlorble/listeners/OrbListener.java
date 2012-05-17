@@ -2,11 +2,12 @@ package com.feildmaster.controlorble.listeners;
 
 import com.feildmaster.lib.expeditor.Editor;
 import com.feildmaster.controlorble.*;
-import com.feildmaster.controlorble.event.PlayerBreakBlockDropOrbEvent;
+import com.feildmaster.controlorble.event.*;
 import java.util.List;
+import java.util.Random;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.metadata.*;
 
@@ -15,6 +16,7 @@ import org.bukkit.metadata.*;
 public class OrbListener implements Listener {
     private final JavaPlugin plugin;
     private final LazyMetadataValue noExp;
+    private final Random random = new Random();
 
     public OrbListener(JavaPlugin p) {
         plugin = p;
@@ -215,6 +217,7 @@ public class OrbListener implements Listener {
         if(loss.intValue() > 0) {
             if(plugin.getConfig().getBoolean("config.virtualPlayerEXP")) {
                 if(!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
+                    // You lose more than this... it gets displayed after expBurn
                     p.sendMessage("You have lost "+loss.intValue()+" experience");
                 }
 
@@ -244,8 +247,9 @@ public class OrbListener implements Listener {
         plugin.debug(event.getEntity().getType() + " died for " + exp + " exp");
     }
 
-    private String gainMessage(Number exp) {
-        return "You have gained "+exp+" experience";
+    private String gainMessage(int exp) {
+        //return "You have " + (exp >= 0 ? "gained" : "lost") + " " + (exp >= 0 ? exp : ~exp) + " experience";
+        return "You have gained " + exp + " experience";
     }
 
     private int calculatePercent(EntityDamageEvent.DamageCause dc) {
@@ -279,25 +283,79 @@ public class OrbListener implements Listener {
         }
     }
 
-    @EventHandler(priority=EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void blockBreak(BlockBreakEvent event) {
         String key = "blockExp."+event.getBlock().getType().toString();
-        Object o = plugin.getConfig().get(key);
-        if (o instanceof Integer) {
-            int exp = plugin.getConfig().getExp(key);
-            if(exp < 0) exp = 0;
+        int exp = plugin.getConfig().getExp(key);
+
+        if (PlayerBreakBlockDropOrbEvent.getHandlerList().getRegisteredListeners().length > 0) {
             PlayerBreakBlockDropOrbEvent e = new PlayerBreakBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
+
+            int chance = plugin.getConfig().getPercent("chance.blockBreak");
+            e.setCancelled(chance != 100 && (chance == 0 || chance < random.nextInt(100)));
+
             plugin.getServer().getPluginManager().callEvent(e);
-            if(e.getExp() < 1) return;
-            if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
-                event.getPlayer().giveExp(e.getExp());
-                if(!plugin.getConfig().getBoolean("config.hideVirtualExpMessage")) {
-                    event.getPlayer().sendMessage(gainMessage(e.getExp()));
-                }
-            } else {
-                ExperienceOrb orb = event.getBlock().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
-                orb.setExperience(e.getExp());
-            }
+
+            exp = e.getExp();
         }
+
+        if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
+            if (exp < 0) {
+                new Editor(event.getPlayer()).takeExp(exp);
+            } else if (exp > 0) {
+                new Editor(event.getPlayer()).giveExp(exp);
+            } else {
+                return;
+            }
+
+            if(!plugin.getConfig().getBoolean("config.hideVirtualExpMessage")) {
+                event.getPlayer().sendMessage(gainMessage(exp));
+            }
+        } else {
+            spawnExperience(event, exp);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void blockPlace(BlockPlaceEvent event) {
+        String key = "blockExp." + event.getBlock().getType().toString();
+        int exp = plugin.getConfig().getExp(key);
+
+        if (PlayerPlaceBlockDropOrbEvent.getHandlerList().getRegisteredListeners().length > 0) {
+            PlayerPlaceBlockDropOrbEvent e = new PlayerPlaceBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
+
+            int chance = plugin.getConfig().getPercent("chance.blockPlace");
+            e.setCancelled(chance != 100 && (chance == 0 || chance < random.nextInt(100)));
+
+            plugin.getServer().getPluginManager().callEvent(e);
+
+            exp = e.getExp();
+        }
+
+        if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
+            if (exp < 0) {
+                new Editor(event.getPlayer()).takeExp(exp);
+            } else if (exp > 0) {
+                new Editor(event.getPlayer()).giveExp(exp);
+            } else {
+                return;
+            }
+
+            if(!plugin.getConfig().getBoolean("config.hideVirtualExpMessage")) {
+                event.getPlayer().sendMessage(gainMessage(exp));
+            }
+        } else {
+            spawnExperience(event, exp);
+        }
+    }
+
+    private void spawnExperience(BlockEvent event, int exp) {
+        // This needs to be fixed in Minecraft/CraftBukkit!!
+        if (exp < 1) {
+            return;
+        }
+
+        ExperienceOrb orb = event.getBlock().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
+        orb.setExperience(exp);
     }
 }

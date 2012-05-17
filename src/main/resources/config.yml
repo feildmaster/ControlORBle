@@ -12,6 +12,9 @@ config:
     showTotal: false
     expLossByTotal: false
     expBurn: 0
+chance:
+    blockPlace: 100
+    blockBreak: 100
 stopMonsterEXP:
     monsterSpawner: false
 multipliers:
