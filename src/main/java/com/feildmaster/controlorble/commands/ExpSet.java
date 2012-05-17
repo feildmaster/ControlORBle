@@ -1,6 +1,7 @@
 package com.feildmaster.controlorble.commands;
 
 import com.feildmaster.controlorble.JavaPlugin;
+import com.feildmaster.lib.configuration.EnhancedConfiguration;
 import org.bukkit.command.*;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -25,9 +26,10 @@ public class ExpSet implements CommandExecutor {
         String type = args[0];
         String value = args[1];
         boolean set = false;
+        EnhancedConfiguration config = plugin.getConfig();
 
-        for (String key : plugin.getConfig().getKeys(false)) {
-            Object o = plugin.getConfig().get(key);
+        for (String key : config.getKeys(false)) {
+            Object o = config.get(key);
 
             if (!(o instanceof ConfigurationSection)) {
                 continue;
@@ -37,14 +39,15 @@ public class ExpSet implements CommandExecutor {
 
             if (section.contains(type)) {
                 String fullKey = key+"."+type;
-                Object def = plugin.getConfig().getDefaults().get(fullKey);
+                Object def = config.getDefaults().get(fullKey);
                 boolean Int = def instanceof Integer;
                 boolean Bool = def instanceof Boolean;
                 if (!Int && !Bool) {
                     continue;
                 }
                 try {
-                    section.set(type, (Int ? Integer.parseInt(value) : Boolean.parseBoolean(value)));
+                    config.set(type, (Int ? Integer.parseInt(value) : Boolean.parseBoolean(value)));
+                    config.save();
                     sender.sendMessage(fullKey+" set to "+section.get(type));
                 } catch (Exception e) {
                     sender.sendMessage("Setting value \""+fullKey+": "+value+"\" failed. (Not " + (Int ? "a number)" : "true/false)"));
