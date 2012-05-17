@@ -300,17 +300,7 @@ public class OrbListener implements Listener {
         }
 
         if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
-            if (exp < 0) {
-                new Editor(event.getPlayer()).takeExp(exp);
-            } else if (exp > 0) {
-                new Editor(event.getPlayer()).giveExp(exp);
-            } else {
-                return;
-            }
-
-            if(!plugin.getConfig().getBoolean("config.hideVirtualExpMessage")) {
-                event.getPlayer().sendMessage(gainMessage(exp));
-            }
+            giveExperience(event.getPlayer(), exp);
         } else {
             spawnExperience(event, exp);
         }
@@ -333,19 +323,29 @@ public class OrbListener implements Listener {
         }
 
         if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
-            if (exp < 0) {
-                new Editor(event.getPlayer()).takeExp(exp);
-            } else if (exp > 0) {
-                new Editor(event.getPlayer()).giveExp(exp);
-            } else {
-                return;
-            }
-
-            if(!plugin.getConfig().getBoolean("config.hideVirtualExpMessage")) {
-                event.getPlayer().sendMessage(gainMessage(exp));
-            }
+            giveExperience(event.getPlayer(), exp);
         } else {
             spawnExperience(event, exp);
+        }
+    }
+
+    private void giveExperience(Player player, int exp) {
+        Editor editor = new Editor(player);
+        if (exp < 0) {
+            boolean flag = plugin.getConfig().getBoolean("config.expLossByTotal");
+            if (flag) {
+                editor.recalcTotalExp();
+            }
+
+            editor.takeExp(exp, flag);
+        } else if (exp > 0) {
+            editor.giveExp(exp);
+        } else {
+            return;
+        }
+
+        if (!plugin.getConfig().getBoolean("config.hideVirtualExpMessage")) {
+            player.sendMessage(gainMessage(exp));
         }
     }
 
