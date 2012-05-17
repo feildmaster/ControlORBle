@@ -285,7 +285,7 @@ public class OrbListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void blockBreak(BlockBreakEvent event) {
-        String key = "blockExp."+event.getBlock().getType().toString();
+        String key = "blockExp."+event.getBlock().getType().toString() + ".break";
         int exp = plugin.getConfig().getExp(key);
 
         if (PlayerBreakBlockDropOrbEvent.getHandlerList().getRegisteredListeners().length > 0) {
@@ -297,6 +297,10 @@ public class OrbListener implements Listener {
             plugin.getServer().getPluginManager().callEvent(e);
 
             exp = e.getExp();
+
+            if (e.isCancelled()) {
+                return;
+            }
         }
 
         if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
@@ -308,7 +312,7 @@ public class OrbListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void blockPlace(BlockPlaceEvent event) {
-        String key = "blockExp." + event.getBlock().getType().toString();
+        String key = "blockExp." + event.getBlock().getType().toString() + ".place";
         int exp = plugin.getConfig().getExp(key);
 
         if (PlayerPlaceBlockDropOrbEvent.getHandlerList().getRegisteredListeners().length > 0) {
@@ -320,6 +324,10 @@ public class OrbListener implements Listener {
             plugin.getServer().getPluginManager().callEvent(e);
 
             exp = e.getExp();
+
+            if (e.isCancelled()) {
+                return;
+            }
         }
 
         if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
