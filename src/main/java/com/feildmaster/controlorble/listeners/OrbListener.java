@@ -292,13 +292,18 @@ public class OrbListener implements Listener {
             PlayerBreakBlockDropOrbEvent e = new PlayerBreakBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
 
             int chance = plugin.getConfig().getPercent("chance.blockBreak");
-            e.setCancelled(chance != 100 && (chance == 0 || chance < random.nextInt(100)));
+            e.setCancelled(chance != 100 && (chance == 0 || chance > random.nextInt(100)));
 
             plugin.getServer().getPluginManager().callEvent(e);
 
             exp = e.getExp();
 
             if (e.isCancelled()) {
+                return;
+            }
+        } else {
+            int chance = plugin.getConfig().getPercent("chance.blockBreak");
+            if (chance == 0 || (chance < 100 && chance > random.nextInt(100))) {
                 return;
             }
         }
@@ -326,6 +331,11 @@ public class OrbListener implements Listener {
             exp = e.getExp();
 
             if (e.isCancelled()) {
+                return;
+            }
+        } else {
+            int chance = plugin.getConfig().getPercent("chance.blockPlace");
+            if (chance == 0 || (chance < 100 && chance > random.nextInt(100))) {
                 return;
             }
         }
