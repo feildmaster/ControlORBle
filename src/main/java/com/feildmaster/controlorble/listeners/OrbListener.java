@@ -210,8 +210,8 @@ public class OrbListener implements Listener {
 
         plugin.debug(p.getName() + " will respawn with " + event.getNewExp() + " exp");
 
-        if(loss.intValue() > 0 && plugin.getConfig().getPercent("expBurn") > 0) {
-            loss -= loss * (plugin.getConfig().getPercent("expBurn")/100D) ;
+        if(loss.intValue() > 0 && plugin.getConfig().getPercent("config.expBurn") > 0) {
+            loss -= loss * (plugin.getConfig().getPercent("config.expBurn")/100D) ;
         }
 
         if(loss.intValue() > 0) {
