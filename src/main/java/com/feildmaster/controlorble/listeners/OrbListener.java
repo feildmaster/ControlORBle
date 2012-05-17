@@ -324,7 +324,7 @@ public class OrbListener implements Listener {
             PlayerPlaceBlockDropOrbEvent e = new PlayerPlaceBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
 
             int chance = plugin.getConfig().getPercent("chance.blockPlace");
-            e.setCancelled(chance != 100 && (chance == 0 || chance < random.nextInt(100)));
+            e.setCancelled(chance != 100 && (chance == 0 || chance > random.nextInt(100)));
 
             plugin.getServer().getPluginManager().callEvent(e);
 
