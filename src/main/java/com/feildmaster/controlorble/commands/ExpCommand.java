@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 
 public class ExpCommand implements CommandExecutor {
     private JavaPlugin plugin;
+    private static final String Format_1 = "Your experience was set to %1$s";
+    private static final String Format_2 = "You have been given %1$s experience";
 
     public ExpCommand(JavaPlugin p) {
         plugin = p;
@@ -33,9 +35,6 @@ public class ExpCommand implements CommandExecutor {
         }
 
         Player p1 = null;
-        Integer exp = null;
-        String format = "Your experience was set to %1$s";
-        String format2 = "You have been given %1$s experience";
         String parse = null;
 
         if (size == 1) {
@@ -61,6 +60,7 @@ public class ExpCommand implements CommandExecutor {
 
         int old_exp = p2.getExp();
         int old_lvl = p2.getLevel();
+        int exp = 0;
 
         try {
             String n = parse;
@@ -72,13 +72,14 @@ public class ExpCommand implements CommandExecutor {
             return notANumber(sender);
         }
 
+        String format = null;
         if (parse.startsWith("+") || parse.startsWith("-")) {
-            format = String.format(format2, exp.toString());
+            format = String.format(Format_2, exp);
             // Is this supposed to be here...?
             //sender.sendMessage("Exp: "+ exp + " + " + p2.getTotalExp(true) + " = " + (exp+p2.getTotalExp()));
             exp += p2.getTotalExp(true);
         } else {
-            format = String.format(format, exp.toString());
+            format = String.format(Format_1, exp);
         }
 
         p2.setExp(exp);
@@ -88,7 +89,7 @@ public class ExpCommand implements CommandExecutor {
             p1.sendMessage(plugin.format(ChatColor.YELLOW, format));
         }
 
-        sender.sendMessage(plugin.format("Player experience changed from "+old_lvl+"/"+old_exp+" to "+p2.getLevel()+"/"+p2.getExp()));
+        sender.sendMessage(plugin.format("Player experience changed from " + old_lvl + "/" + old_exp + " to " + p2.getLevel() + "/" + p2.getExp()));
         return true;
     }
 
