@@ -10,13 +10,11 @@ public class ConfigurationWrapper extends EnhancedConfiguration {
         super(plugin);
         loadDefaults(); // Load the defaults. :D
         populateDefaultBlocks();
-        // Update Remove in 3.0
+        // Update Config - Remove in 3.0
         updateBlockValues(); // This updates old configuration to the new configuration
-        // Remove in 3.0
         if(get("blockExp.Basic", "") != "") {
             unset("blockExp.Basic");
         }
-        // Remove in 3.0
         if(get("animal.Wolf", "") != "") {
             set("animal.tameWolf", get("animal.Wolf"));
             unset("animal.Wolf");

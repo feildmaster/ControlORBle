@@ -26,10 +26,7 @@ public class OrbListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntitySpawn(CreatureSpawnEvent event) {
-        if (!plugin.getConfig().getBoolean("stopMonsterEXP.monsterSpawner")) {
-            return;
-        }
-        if (event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER)) {
+        if (plugin.getConfig().getBoolean("stopMonsterEXP.monsterSpawner") && event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER)) {
             plugin.debug("Enitity "+event.getEntityType()+"["+event.getEntity().getUniqueId()+"], will not drop experience when killed.");
             event.getEntity().setMetadata("noExp", noExp);
         }
@@ -235,20 +232,17 @@ public class OrbListener implements Listener {
         if(exp != 0) {
             exp *= plugin.getConfig().getMultiplier("monsterEXP");
             if (plugin.getConfig().getBoolean("config.virtualEXP")) {
-                p.giveExp(exp);
-                if(!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
-                    p.sendMessage(gainMessage(exp));
-                }
+                giveExperience(p, exp);
             } else {
                 event.setDroppedExp(exp);
             }
         }
 
-        plugin.debug(event.getEntity().getType() + " died for " + exp + " exp");
+        plugin.debug(event.getEntity().getType() + " dropped " + exp + " exp");
     }
 
     private String gainMessage(int exp) {
-        //return "You have " + (exp >= 0 ? "gained" : "lost") + " " + (exp >= 0 ? exp : ~exp) + " experience";
+        //return "You have " + (exp >= 0 ? "gained" : "lost") + " " + (exp >= 0 ? exp : -exp) + " experience";
         return "You have gained " + exp + " experience";
     }
 
@@ -292,7 +286,7 @@ public class OrbListener implements Listener {
             PlayerBreakBlockDropOrbEvent e = new PlayerBreakBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
 
             int chance = plugin.getConfig().getPercent("chance.blockBreak");
-            e.setCancelled(chance != 100 && (chance == 0 || chance > random.nextInt(100)));
+            e.setCancelled(chance == 0 || (chance < 100 && chance > random.nextInt(100)));
 
             plugin.getServer().getPluginManager().callEvent(e);
 
@@ -324,7 +318,7 @@ public class OrbListener implements Listener {
             PlayerPlaceBlockDropOrbEvent e = new PlayerPlaceBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
 
             int chance = plugin.getConfig().getPercent("chance.blockPlace");
-            e.setCancelled(chance != 100 && (chance == 0 || chance > random.nextInt(100)));
+            e.setCancelled(chance == 0 && (chance < 100 && chance > random.nextInt(100)));
 
             plugin.getServer().getPluginManager().callEvent(e);
 
