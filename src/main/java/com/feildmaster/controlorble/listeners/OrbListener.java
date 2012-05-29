@@ -356,7 +356,7 @@ public class OrbListener implements Listener {
             return;
         }
 
-        if (!plugin.getConfig().getBoolean("config.hideVirtualExpMessage")) {
+        if (!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
             player.sendMessage(gainMessage(exp));
         }
     }
