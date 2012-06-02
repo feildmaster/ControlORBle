@@ -213,17 +213,13 @@ public class OrbListener implements Listener {
 
         if(loss.intValue() > 0) {
             if(plugin.getConfig().getBoolean("config.virtualPlayerEXP")) {
-                if(!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
-                    // You lose more than this... it gets displayed after expBurn
-                    p.sendMessage("You have lost "+loss.intValue()+" experience");
-                }
+                // You lose more than this... it gets displayed after expBurn
+                sendExpMessage(p, "You have lost "+loss.intValue()+" experience");
 
                 Player killer = getPlayer(p.getLastDamageCause());
                 if(killer != null) {
                     killer.giveExp(loss.intValue());
-                    if (!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
-                        sendMessage(killer, gainMessage(loss.intValue()));
-                    }
+                    sendExpMessage(killer, gainMessage(loss.intValue()));
                 }
             } else {
                 event.setDroppedExp(loss.intValue());
@@ -249,12 +245,12 @@ public class OrbListener implements Listener {
         return "You have gained " + exp + " experience";
     }
 
-    private void sendMessage(Player player, String message) {
+    private void sendExpMessage(Player player, String message) {
         if (player == null || message == null) {
             return;
         }
 
-        if (!plugin.sendPluginMessage(player, message)) {
+        if (!plugin.sendPluginMessage(player, message) && !plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
             player.sendMessage(message);
         }
     }
@@ -368,7 +364,7 @@ public class OrbListener implements Listener {
         }
 
         if (!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
-            sendMessage(player, gainMessage(exp));
+            sendExpMessage(player, gainMessage(exp));
         }
     }
 
