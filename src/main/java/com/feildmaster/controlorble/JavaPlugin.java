@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class JavaPlugin extends PluginWrapper {
+    private static final String PLUGIN_CHANNEL = "";
     private boolean debugerEnabled;
     private ConfigurationWrapper config;
 
@@ -35,6 +36,19 @@ public class JavaPlugin extends PluginWrapper {
             if (!getConfig().save()) {
                 debug(getConfig().getLastException().getCause().getMessage());
             }
+        }
+    }
+
+    public boolean sendPluginMessage(Player player, String message) {
+        if (!player.getListeningPluginChannels().contains(PLUGIN_CHANNEL)) {
+            return false;
+        }
+
+        try {
+            player.sendPluginMessage(this, PLUGIN_CHANNEL, message.getBytes("UTF-8"));
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 

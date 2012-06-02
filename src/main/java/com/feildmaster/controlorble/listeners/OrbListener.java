@@ -220,7 +220,7 @@ public class OrbListener implements Listener {
 
                 Player killer = getPlayer(p.getLastDamageCause());
                 if(killer != null && !plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
-                    killer.sendMessage(gainMessage(loss.intValue()));
+                    sendMessage(killer, gainMessage(loss.intValue()));
                 }
             } else {
                 event.setDroppedExp(loss.intValue());
@@ -244,6 +244,16 @@ public class OrbListener implements Listener {
     private String gainMessage(int exp) {
         //return "You have " + (exp >= 0 ? "gained" : "lost") + " " + (exp >= 0 ? exp : -exp) + " experience";
         return "You have gained " + exp + " experience";
+    }
+
+    private void sendMessage(Player player, String message) {
+        if (player == null || message == null) {
+            return;
+        }
+
+        if (!plugin.sendPluginMessage(player, message)) {
+            player.sendMessage(message);
+        }
     }
 
     private int calculatePercent(EntityDamageEvent.DamageCause dc) {
@@ -352,12 +362,10 @@ public class OrbListener implements Listener {
             editor.takeExp(exp, flag);
         } else if (exp > 0) {
             editor.giveExp(exp);
-        } else {
-            return;
         }
 
         if (!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
-            player.sendMessage(gainMessage(exp));
+            sendMessage(player, gainMessage(exp));
         }
     }
 
