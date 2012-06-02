@@ -219,8 +219,11 @@ public class OrbListener implements Listener {
                 }
 
                 Player killer = getPlayer(p.getLastDamageCause());
-                if(killer != null && !plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
-                    sendMessage(killer, gainMessage(loss.intValue()));
+                if(killer != null) {
+                    killer.giveExp(loss.intValue());
+                    if (!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
+                        sendMessage(killer, gainMessage(loss.intValue()));
+                    }
                 }
             } else {
                 event.setDroppedExp(loss.intValue());
