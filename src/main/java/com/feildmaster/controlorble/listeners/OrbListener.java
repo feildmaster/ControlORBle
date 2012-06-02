@@ -207,23 +207,38 @@ public class OrbListener implements Listener {
 
         plugin.debug(p.getName() + " will respawn with " + event.getNewExp() + " exp");
 
-        if(loss.intValue() > 0 && plugin.getConfig().getPercent("config.expBurn") > 0) {
-            loss -= loss * (plugin.getConfig().getPercent("config.expBurn")/100D) ;
+        if(loss.intValue() <= 0) {
+            return;
         }
 
-        if(loss.intValue() > 0) {
-            if(plugin.getConfig().getBoolean("config.virtualPlayerEXP")) {
-                // You lose more than this... it gets displayed after expBurn
-                sendExpMessage(p, "You have lost "+loss.intValue()+" experience");
+        if(plugin.getConfig().getBoolean("config.virtualPlayerEXP")) {
+            sendExpMessage(p, "You have lost " + loss.intValue() + " experience");
 
-                Player killer = getPlayer(p.getLastDamageCause());
-                if(killer != null) {
-                    killer.giveExp(loss.intValue());
-                    sendExpMessage(killer, gainMessage(loss.intValue()));
-                }
-            } else {
-                event.setDroppedExp(loss.intValue());
+            Player killer = getPlayer(p.getLastDamageCause());
+            if(killer != null) {
+                // Burn the experience
+                burn(loss);
+
+                // Give exp and send message
+                killer.giveExp(loss.intValue());
+                sendExpMessage(killer, gainMessage(loss.intValue()));
             }
+
+            return;
+        }
+
+        burn(loss);
+        event.setDroppedExp(loss.intValue());
+    }
+
+    private void burn(Double value) {
+        if (value <= 0) {
+            return;
+        }
+
+        int percent = plugin.getConfig().getPercent("config.expBurn");
+        if(percent > 0) {
+            value -= value * (percent/100D);
         }
     }
 
