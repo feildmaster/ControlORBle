@@ -48,12 +48,10 @@ public class JavaPlugin extends PluginWrapper {
             return false;
         }
         if (!player.getListeningPluginChannels().contains(PLUGIN_CHANNEL)) {
-            this.debug(player, "PluginChannel not found");
             return false;
         }
 
         try {
-            this.debug(player, "Sending message to PluginChannel");
             player.sendPluginMessage(this, PLUGIN_CHANNEL, message.getBytes("UTF-8"));
             return true;
         } catch (Exception e) {
