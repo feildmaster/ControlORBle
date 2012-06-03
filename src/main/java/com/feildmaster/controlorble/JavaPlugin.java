@@ -4,16 +4,20 @@ import com.feildmaster.controlorble.listeners.*;
 import com.feildmaster.controlorble.commands.*;
 import com.feildmaster.lib.configuration.PluginWrapper;
 import com.feildmaster.lib.debug.Debugger;
+import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class JavaPlugin extends PluginWrapper {
-    private static final String PLUGIN_CHANNEL = "";
+    private static final String PLUGIN_CHANNEL = "SimpleNotice";
     private boolean debugerEnabled;
     private ConfigurationWrapper config;
 
     public void onEnable() {
         debugerEnabled = getServer().getPluginManager().getPlugin("debuger") != null;
+
+        // Register plugin channel
+        getServer().getMessenger().registerOutgoingPluginChannel(this, PLUGIN_CHANNEL);
 
         // Register events
         getServer().getPluginManager().registerEvents(new OrbListener(this), this);
@@ -40,14 +44,20 @@ public class JavaPlugin extends PluginWrapper {
     }
 
     public boolean sendPluginMessage(Player player, String message) {
+        if (player == null) {
+            return false;
+        }
         if (!player.getListeningPluginChannels().contains(PLUGIN_CHANNEL)) {
+            this.debug(player, "PluginChannel not found");
             return false;
         }
 
         try {
+            this.debug(player, "Sending message to PluginChannel");
             player.sendPluginMessage(this, PLUGIN_CHANNEL, message.getBytes("UTF-8"));
             return true;
         } catch (Exception e) {
+            this.getLogger().log(Level.WARNING, "Sending message to PluginChannel failed", e);
             return false;
         }
     }
