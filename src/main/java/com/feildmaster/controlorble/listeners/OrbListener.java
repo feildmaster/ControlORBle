@@ -212,7 +212,7 @@ public class OrbListener implements Listener {
         }
 
         if(plugin.getConfig().getBoolean("config.virtualPlayerEXP")) {
-            sendExpMessage(p, "You have lost " + loss.intValue() + " experience");
+            sendExpMessage(p, gainMessage(-loss.intValue()));
 
             Player killer = getPlayer(p.getLastDamageCause());
             if(killer != null) {
@@ -256,8 +256,7 @@ public class OrbListener implements Listener {
     }
 
     private String gainMessage(int exp) {
-        //return "You have " + (exp >= 0 ? "gained" : "lost") + " " + (exp >= 0 ? exp : -exp) + " experience";
-        return "You have gained " + exp + " experience";
+        return "You " + (exp >= 0 ? ("gained " + exp ): ("lost " + -exp)) + " exp";
     }
 
     private void sendExpMessage(Player player, String message) {
@@ -378,9 +377,7 @@ public class OrbListener implements Listener {
             editor.giveExp(exp);
         }
 
-        if (!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
-            sendExpMessage(player, gainMessage(exp));
-        }
+        sendExpMessage(player, gainMessage(exp));
     }
 
     private void spawnExperience(BlockEvent event, int exp) {
