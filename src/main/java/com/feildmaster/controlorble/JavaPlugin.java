@@ -55,7 +55,7 @@ public class JavaPlugin extends PluginWrapper {
             player.sendPluginMessage(this, PLUGIN_CHANNEL, message.getBytes("UTF-8"));
             return true;
         } catch (Exception e) {
-            this.getLogger().log(Level.WARNING, "Sending message to PluginChannel failed", e);
+            this.getLogger().log(Level.WARNING, "Sending PluginChannel{" + PLUGIN_CHANNEL + "} message to \"" + player.getName() + "\" failed", e.getCause());
             return false;
         }
     }
