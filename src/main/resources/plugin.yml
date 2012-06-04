@@ -14,6 +14,9 @@ commands:
     description: set experience values in game
 
 permissions:
+  orbEnhance.viewExp:
+    default: op
+    description: Allows players to view the experience of others
   orbEnhance.modifyExp:
     default: op
     description: Allows modification of experience values

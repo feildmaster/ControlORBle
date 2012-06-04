@@ -19,7 +19,7 @@ public class ExpCommand implements CommandExecutor {
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(cmd.getName().equals("exp-reload")) {
+        if (cmd.getName().equals("exp-reload")) {
             return onReloadCommand(sender);
         }
 
@@ -30,7 +30,7 @@ public class ExpCommand implements CommandExecutor {
             return invalidCommand(sender, label);
         }
 
-        if(!sender.hasPermission("orbEnhance.admin")) {
+        if (!sender.hasPermission("orbEnhance.admin")) {
             return noPermission(sender);
         }
 
@@ -40,6 +40,11 @@ public class ExpCommand implements CommandExecutor {
         if (size == 1) {
             p1 = plugin.getServer().getPlayer(args[0]);
             if (p1 != null) {
+                if (sender instanceof Player && !sender.equals(p1)) {
+                    if (!((Player) sender).hasPermission("orbEnhance.viewExp")) {
+                        return noPermission(sender);
+                    }
+                }
                 return playerLevel(sender, p1);
             } else if (sender instanceof Player) {
                 p1 = (Player) sender;
@@ -52,7 +57,7 @@ public class ExpCommand implements CommandExecutor {
             return invalidCommand(sender, label);
         }
 
-        if (p1==null) {
+        if (p1 == null) {
             return playerNotFound(sender);
         }
 
@@ -64,7 +69,7 @@ public class ExpCommand implements CommandExecutor {
 
         try {
             String n = parse;
-            if(parse.startsWith("+")) {
+            if (parse.startsWith("+")) {
                 n = parse.substring(1);
             }
             exp = Integer.parseInt(n);
@@ -139,7 +144,7 @@ public class ExpCommand implements CommandExecutor {
         sender.sendMessage(plugin.format((sender.equals(player) ? "Your" : (player.getName() + "'s")) + " level: " + p.getLevel()));
         sender.sendMessage(plugin.format("Experience: " + p.getExp()+ "/" + p.getExpToLevel()));
 
-        if(plugin.getConfig().getBoolean("config.showTotal")) {
+        if (plugin.getConfig().getBoolean("config.showTotal")) {
             sender.sendMessage(plugin.format("Total Exp : " + p.getTotalExp(true)));
         }
 
