@@ -12,6 +12,7 @@ config:
     showTotal: false
     expLossByTotal: false
     expBurn: 0
+    enablePets: false
 chance:
     blockPlace: 100
     blockBreak: 100

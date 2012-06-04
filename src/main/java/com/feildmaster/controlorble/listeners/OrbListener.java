@@ -37,7 +37,7 @@ public class OrbListener implements Listener {
         event.setDroppedExp(0); // Set to 0, let plugin override later.
 
         // Player gets special case
-        if(event instanceof PlayerDeathEvent) {
+        if (event instanceof PlayerDeathEvent) {
             playerDeathHandler((PlayerDeathEvent) event);
             return;
         }
@@ -45,7 +45,7 @@ public class OrbListener implements Listener {
         Entity entity = event.getEntity();
         Player p = getPlayer(entity.getLastDamageCause());
 
-        if(p == null) {
+        if (p == null) {
             plugin.debug("Not a player kill");
             return;
         }
@@ -78,11 +78,11 @@ public class OrbListener implements Listener {
     }
 
     private Player getPlayer(EntityDamageEvent cause) {
-        if(cause == null) {
+        if (cause == null) {
             plugin.debug("EntityDamageEvent is null!");
             return null;
         }
-        if(!(cause instanceof EntityDamageByEntityEvent)) {
+        if (!(cause instanceof EntityDamageByEntityEvent)) {
             plugin.debug("EntityDamageEvent isn't by Entity.");
             return null;
         }
@@ -90,17 +90,25 @@ public class OrbListener implements Listener {
         Player p = null;
         Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
 
-        if(damager instanceof Projectile) {
+        if (damager instanceof Projectile) {
             Projectile projectile = (Projectile) damager;
-            if(projectile.getShooter() instanceof Player) {
+            if (projectile.getShooter() instanceof Player) {
                 p = (Player) projectile.getShooter();
                 plugin.debug(projectile.getType() + " killed " + cause.getEntityType() + ". Shooter: " + p.getName());
             } else {
                 plugin.debug(projectile.getType() + " killed " + cause.getEntityType());
             }
-        } else if(damager instanceof Player) {
+        } else if (damager instanceof Player) {
             p = (Player)damager;
             plugin.debug(cause.getEntityType() + " killed by player: " + p.getName());
+        } else if (damager instanceof Tameable && plugin.getConfig().getBoolean("config.enablePets")) {
+            Tameable animal = (Tameable) damager;
+            if (animal.isTamed()) {
+                AnimalTamer tamer = animal.getOwner();
+                if (tamer instanceof Player) {
+                    p = (Player) tamer;
+                }
+            }
         }
 
         return p;
@@ -185,17 +193,17 @@ public class OrbListener implements Listener {
 
         Double loss = expBase * percentage;
 
-        if(p.hasPermission("orbEnhance.KeepExp")) { // Keep all experience
+        if (p.hasPermission("orbEnhance.KeepExp")) { // Keep all experience
             plugin.debug("\"orbEnhance.KeepExp\" present, keeping all experience.");
             event.setKeepLevel(true);
             return;
         }
 
-        if(!plugin.getConfig().getBoolean("config.playerDelevel") && loss > e.getExp()) {
+        if (!plugin.getConfig().getBoolean("config.playerDelevel") && loss > e.getExp()) {
             loss = (double) e.getExp();
         }
 
-        if(e.getTotalExp() > loss.intValue()) {
+        if (e.getTotalExp() > loss.intValue()) {
             final int exp = e.getTotalExp() - loss.intValue();
             event.setNewExp(exp);
         } else {
@@ -207,15 +215,15 @@ public class OrbListener implements Listener {
 
         plugin.debug(p.getName() + " will respawn with " + event.getNewExp() + " exp");
 
-        if(loss.intValue() <= 0) {
+        if (loss.intValue() <= 0) {
             return;
         }
 
-        if(plugin.getConfig().getBoolean("config.virtualPlayerEXP")) {
+        if (plugin.getConfig().getBoolean("config.virtualPlayerEXP")) {
             sendExpMessage(p, gainMessage(-loss.intValue()));
 
             Player killer = getPlayer(p.getLastDamageCause());
-            if(killer != null) {
+            if (killer != null) {
                 // Burn the experience
                 burn(loss);
 
@@ -237,13 +245,13 @@ public class OrbListener implements Listener {
         }
 
         int percent = plugin.getConfig().getPercent("config.expBurn");
-        if(percent > 0) {
+        if (percent > 0) {
             value -= value * (percent/100D);
         }
     }
 
     private void monsterDeathHandler(EntityDeathEvent event, Player p, int exp) {
-        if(exp != 0) {
+        if (exp != 0) {
             exp *= plugin.getConfig().getMultiplier("monsterEXP");
             if (plugin.getConfig().getBoolean("config.virtualEXP")) {
                 giveExperience(p, exp);
@@ -270,7 +278,7 @@ public class OrbListener implements Listener {
     }
 
     private int calculatePercent(EntityDamageEvent.DamageCause dc) {
-        if(plugin.getConfig().getBoolean("config.customExpLoss")) {
+        if (plugin.getConfig().getBoolean("config.customExpLoss")) {
             switch(dc) {
                 // TODO: Suffocation and Fall percent
                 //case SUFFOCATION: return Plugin.expLossSuffocate;
