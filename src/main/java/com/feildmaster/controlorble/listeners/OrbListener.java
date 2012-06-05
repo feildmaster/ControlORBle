@@ -227,6 +227,8 @@ public class OrbListener implements Listener {
                 // Burn the experience
                 burn(loss);
 
+                if (loss.intValue() <= 0) return;
+
                 // Give exp and send message
                 killer.giveExp(loss.intValue());
                 sendExpMessage(killer, gainMessage(loss.intValue()));
@@ -236,6 +238,7 @@ public class OrbListener implements Listener {
         }
 
         burn(loss);
+        if (loss.intValue() <= 0) return;
         event.setDroppedExp(loss.intValue());
     }
 
@@ -333,6 +336,11 @@ public class OrbListener implements Listener {
             }
         }
 
+        // Don't give 0 experience... Illegal!
+        if (exp == 0) {
+            return;
+        }
+
         if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
             giveExperience(event.getPlayer(), exp);
         } else {
@@ -363,6 +371,11 @@ public class OrbListener implements Listener {
             if (chance == 0 || (chance < 100 && chance > random.nextInt(100))) {
                 return;
             }
+        }
+
+        // Don't give 0 experience... Illegal!
+        if (exp == 0) {
+            return;
         }
 
         if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
