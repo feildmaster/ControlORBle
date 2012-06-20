@@ -80,8 +80,6 @@ public class ExpCommand implements CommandExecutor {
         String format = null;
         if (parse.startsWith("+") || parse.startsWith("-")) {
             format = String.format(Format_2, exp);
-            // Is this supposed to be here...?
-            //sender.sendMessage("Exp: "+ exp + " + " + p2.getTotalExp(true) + " = " + (exp+p2.getTotalExp()));
             exp += p2.getTotalExp(true);
         } else {
             format = String.format(Format_1, exp);

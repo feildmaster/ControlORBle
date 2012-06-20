@@ -11,8 +11,6 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.metadata.*;
 
-// TODO: Clean "plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")" into a common function
-// experienceMessage(player, amount)
 public class OrbListener implements Listener {
     private final JavaPlugin plugin;
     private final LazyMetadataValue noExp;
