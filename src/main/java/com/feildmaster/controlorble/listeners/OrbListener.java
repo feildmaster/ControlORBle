@@ -273,7 +273,9 @@ public class OrbListener implements Listener {
             return;
         }
 
-        if (!plugin.sendPluginMessage(player, message) && !plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
+        if (player.getListeningPluginChannels().contains("SimpleNotice")) {
+            player.sendPluginMessage(plugin, "SimpleNotice", message.getBytes(java.nio.charset.Charset.forName("UTF-8")));
+        } else if (!plugin.getConfig().getBoolean("config.hideVirtualEXPMessage")) {
             player.sendMessage(message);
         }
     }

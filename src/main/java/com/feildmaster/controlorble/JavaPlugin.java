@@ -4,12 +4,10 @@ import com.feildmaster.controlorble.listeners.*;
 import com.feildmaster.controlorble.commands.*;
 import com.feildmaster.lib.configuration.PluginWrapper;
 import com.feildmaster.lib.debug.Debugger;
-import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class JavaPlugin extends PluginWrapper {
-    private static final String PLUGIN_CHANNEL = "SimpleNotice";
     private boolean debugerEnabled;
     private ConfigurationWrapper config;
 
@@ -17,7 +15,7 @@ public class JavaPlugin extends PluginWrapper {
         debugerEnabled = getServer().getPluginManager().getPlugin("debuger") != null;
 
         // Register plugin channel
-        getServer().getMessenger().registerOutgoingPluginChannel(this, PLUGIN_CHANNEL);
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "SimpleNotice");
 
         // Register events
         getServer().getPluginManager().registerEvents(new OrbListener(this), this);
@@ -40,23 +38,6 @@ public class JavaPlugin extends PluginWrapper {
             if (!getConfig().save()) {
                 debug(getConfig().getLastException().getCause().getMessage());
             }
-        }
-    }
-
-    public boolean sendPluginMessage(Player player, String message) {
-        if (player == null) {
-            return false;
-        }
-        if (!player.getListeningPluginChannels().contains(PLUGIN_CHANNEL)) {
-            return false;
-        }
-
-        try {
-            player.sendPluginMessage(this, PLUGIN_CHANNEL, message.getBytes("UTF-8"));
-            return true;
-        } catch (Exception e) {
-            this.getLogger().log(Level.WARNING, "Sending PluginChannel{" + PLUGIN_CHANNEL + "} message to \"" + player.getName() + "\" failed", e.getCause());
-            return false;
         }
     }
 
