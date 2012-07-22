@@ -190,7 +190,7 @@ public class OrbListener implements Listener {
 
         EntityDamageEvent.DamageCause cause = p.getLastDamageCause() == null ? EntityDamageEvent.DamageCause.CUSTOM : p.getLastDamageCause().getCause();
 
-        int expBase = plugin.getConfig().getBoolean("config.expLossByTotal") ? e.getTotalExp() : e.getExpToLevel();
+        int expBase = plugin.getConfig().getBoolean("config.expLossByTotal") && plugin.getConfig().getBoolean("config.playerDelevel") ? e.getTotalExp() : e.getExpToLevel();
         double percentage = calculatePercent(cause) / 100D;
 
         Double loss = expBase * percentage;
