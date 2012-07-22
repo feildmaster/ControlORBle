@@ -177,12 +177,16 @@ public class OrbListener implements Listener {
 
     private void playerDeathHandler(PlayerDeathEvent event) {
         Player p = (Player) event.getEntity();
-
         plugin.debug("Player Death: " + p.getName());
 
+        if (p.hasPermission("orbEnhance.KeepExp")) { // Keep all experience
+            plugin.debug("\"orbEnhance.KeepExp\" present, keeping all experience.");
+            event.setKeepLevel(true);
+            return;
+        }
+
         Editor e = new Editor(p);
-        // Recalculate total experience, because minecraft doesn't do this...!
-        e.recalcTotalExp();
+        e.recalcTotalExp(); // Recalculate total experience, because minecraft doesn't do this...!
 
         EntityDamageEvent.DamageCause cause = p.getLastDamageCause() == null ? EntityDamageEvent.DamageCause.CUSTOM : p.getLastDamageCause().getCause();
 
@@ -191,19 +195,13 @@ public class OrbListener implements Listener {
 
         Double loss = expBase * percentage;
 
-        if (p.hasPermission("orbEnhance.KeepExp")) { // Keep all experience
-            plugin.debug("\"orbEnhance.KeepExp\" present, keeping all experience.");
-            event.setKeepLevel(true);
-            return;
-        }
-
         if (!plugin.getConfig().getBoolean("config.playerDelevel") && loss > e.getExp()) {
             loss = (double) e.getExp();
         }
 
         if (e.getTotalExp() > loss.intValue()) {
             final int exp = e.getTotalExp() - loss.intValue();
-            event.setNewExp(exp);
+            event.setNewExp(exp + 1);
         } else {
             if (event.getNewExp() != 0) {
                 event.setNewExp(0);
@@ -211,7 +209,7 @@ public class OrbListener implements Listener {
             loss = (double) e.getTotalExp();
         }
 
-        plugin.debug(p.getName() + " will respawn with " + event.getNewExp() + " exp");
+        plugin.debug(p.getName() + " will respawn with " + (event.getNewExp() - 1) + " exp");
 
         if (loss.intValue() <= 0) {
             return;
