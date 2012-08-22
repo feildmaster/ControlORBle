@@ -15,7 +15,7 @@ public class Editor {
         player.setLevel(0);
         player.setTotalExperience(0);
 
-        if(exp <= 0) {
+        if (exp <= 0) {
             return;
         }
 
@@ -23,9 +23,9 @@ public class Editor {
     }
 
     public void giveExp(int exp) {
-        while(exp > 0) {
-            int xp = getExpToLevel()-getExp();
-            if(xp > exp) {
+        while (exp > 0) {
+            int xp = getExpToLevel() - getExp();
+            if (xp > exp) {
                 xp = exp;
             }
             player.giveExp(xp);
@@ -44,7 +44,9 @@ public class Editor {
             xp -= exp;
         } else {
             int m = getExp() - exp;
-            if(m < 0) m = 0;
+            if (m < 0) {
+                m = 0;
+            }
             xp -= getExp() + m;
         }
 
@@ -60,6 +62,7 @@ public class Editor {
     public int getTotalExp() {
         return getTotalExp(false);
     }
+
     public int getTotalExp(boolean recalc) {
         if (recalc) {
             recalcTotalExp();
@@ -75,13 +78,13 @@ public class Editor {
         return getExpToLevel(getLevel());
     }
 
-    public int getExpToLevel(int i) {
-        return 7 + (i * 7 >> 1);
+    public int getExpToLevel(int level) {
+        return level >= 30 ? 62 + (level - 30) * 7 : (level >= 15 ? 17 + (level - 15) * 3 : 17);
     }
 
     public void recalcTotalExp() {
         int total = getExp();
-        for(int i = 0; i < player.getLevel(); i++) {
+        for (int i = 0; i < player.getLevel(); i++) {
             total += getExpToLevel(i);
         }
         player.setTotalExperience(total);
