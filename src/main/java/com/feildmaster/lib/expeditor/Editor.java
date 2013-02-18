@@ -75,7 +75,7 @@ public class Editor {
     }
 
     public int getExpToLevel() {
-        return getExpToLevel(getLevel());
+        return player.getExpToLevel();
     }
 
     public int getExpToLevel(int level) {
