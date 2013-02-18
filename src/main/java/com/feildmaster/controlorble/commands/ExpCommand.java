@@ -1,7 +1,7 @@
 package com.feildmaster.controlorble.commands;
 
-import com.feildmaster.lib.expeditor.Editor;
 import com.feildmaster.controlorble.JavaPlugin;
+import com.feildmaster.lib.expeditor.Editor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -63,7 +63,7 @@ public class ExpCommand implements CommandExecutor {
 
         int old_exp = p2.getExp();
         int old_lvl = p2.getLevel();
-        int exp = 0;
+        int exp;
 
         String n = parse;
         try {
@@ -75,7 +75,7 @@ public class ExpCommand implements CommandExecutor {
             return notANumber(sender, n);
         }
 
-        String format = null;
+        String format;
         if (parse.startsWith("+") || parse.startsWith("-")) {
             format = String.format(Format_2, exp);
             exp += p2.getTotalExp(true);

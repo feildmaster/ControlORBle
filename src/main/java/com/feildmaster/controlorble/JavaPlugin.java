@@ -1,7 +1,7 @@
 package com.feildmaster.controlorble;
 
-import com.feildmaster.controlorble.listeners.*;
 import com.feildmaster.controlorble.commands.*;
+import com.feildmaster.controlorble.listeners.*;
 import com.feildmaster.lib.configuration.PluginWrapper;
 import com.feildmaster.lib.debug.Debugger;
 import org.bukkit.ChatColor;
@@ -11,6 +11,7 @@ public class JavaPlugin extends PluginWrapper {
     private boolean debugerEnabled;
     private ConfigurationWrapper config;
 
+    @Override
     public void onEnable() {
         debugerEnabled = getServer().getPluginManager().getPlugin("debuger") != null;
 
@@ -32,6 +33,7 @@ public class JavaPlugin extends PluginWrapper {
         debug("Enable Complete");
     }
 
+    @Override
     public void onDisable() {
         if (getConfig().isModified()) {
             debug("Saving Configuration");
@@ -41,15 +43,16 @@ public class JavaPlugin extends PluginWrapper {
         }
     }
 
+    @Override
     public ConfigurationWrapper getConfig() {
-        if(config == null) {
+        if (config == null) {
             config = new ConfigurationWrapper(this);
         }
         return config;
     }
 
     public void checkConfig() {
-        if(getConfig().needsUpdate()) {
+        if (getConfig().needsUpdate()) {
             debug("Saving Default Config");
             saveDefaultConfig();
         }
@@ -58,8 +61,9 @@ public class JavaPlugin extends PluginWrapper {
     public void debug(String message) {
         debug(null, message);
     }
+
     public void debug(Player player, String message) {
-        if(debugerEnabled) {
+        if (debugerEnabled) {
             Debugger.debug(player, message, this);
         } else if (getConfig().getBoolean("config.debug")) {
             getLogger().info(message);
@@ -69,7 +73,8 @@ public class JavaPlugin extends PluginWrapper {
     public String format(String string) {
         return format(ChatColor.DARK_AQUA, string);
     }
+
     public String format(ChatColor color, String string) {
-        return String.format(color+"[ControlORBle] %s", string);
+        return String.format(color + "[ControlORBle] %s", string);
     }
 }
