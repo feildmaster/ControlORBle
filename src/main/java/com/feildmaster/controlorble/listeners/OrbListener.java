@@ -1,14 +1,15 @@
 package com.feildmaster.controlorble.listeners;
 
-import com.feildmaster.lib.expeditor.Editor;
 import com.feildmaster.controlorble.*;
-import com.feildmaster.controlorble.event.*;
+import com.feildmaster.controlorble.event.BlockPlaceExpEvent;
+import com.feildmaster.lib.expeditor.Editor;
 import java.util.List;
 import java.util.Random;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.metadata.*;
 
 public class OrbListener implements Listener {
@@ -25,7 +26,7 @@ public class OrbListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntitySpawn(CreatureSpawnEvent event) {
         if (plugin.getConfig().getBoolean("stopMonsterEXP.monsterSpawner") && event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER)) {
-            plugin.debug("Enitity "+event.getEntityType()+"["+event.getEntity().getUniqueId()+"], will not drop experience when killed.");
+            plugin.debug("Enitity " + event.getEntityType() + "[" + event.getEntity().getUniqueId() + "], will not drop experience when killed.");
             event.getEntity().setMetadata("noExp", noExp);
         }
     }
@@ -97,7 +98,7 @@ public class OrbListener implements Listener {
                 plugin.debug(projectile.getType() + " killed " + cause.getEntityType());
             }
         } else if (damager instanceof Player) {
-            p = (Player)damager;
+            p = (Player) damager;
             plugin.debug(cause.getEntityType() + " killed by player: " + p.getName());
         } else if (damager instanceof Tameable && plugin.getConfig().getBoolean("config.enablePets")) {
             Tameable animal = (Tameable) damager;
@@ -136,18 +137,38 @@ public class OrbListener implements Listener {
             }
         }
         // I forgot snowman!
-        if (entity instanceof Snowman) return plugin.getConfig().getExp("animal.Snowman");
+        if (entity instanceof Snowman) {
+            return plugin.getConfig().getExp("animal.Snowman");
+        }
         // 1.0.0 Monsters
-        if (entity instanceof EnderDragon || entity instanceof ComplexEntityPart) return plugin.getConfig().getExp("monster.EnderDragon");
-        if (entity instanceof Blaze) return plugin.getConfig().getExp("monster.Blaze");
+        if (entity instanceof EnderDragon || entity instanceof ComplexEntityPart) {
+            return plugin.getConfig().getExp("monster.EnderDragon");
+        }
+        if (entity instanceof Blaze) {
+            return plugin.getConfig().getExp("monster.Blaze");
+        }
         // Monsters
-        if (entity instanceof Creeper) return plugin.getConfig().getExp("monster.Creeper");
-        if (entity instanceof Enderman) return plugin.getConfig().getExp("monster.Enderman");
-        if (entity instanceof Ghast) return plugin.getConfig().getExp("monster.Ghast");
-        if (entity instanceof Giant) return plugin.getConfig().getExp("monster.Giant");
-        if (entity instanceof PigZombie) return plugin.getConfig().getExp("monster.PigZombie");
-        if (entity instanceof Silverfish) return plugin.getConfig().getExp("monster.Silverfish");
-        if (entity instanceof Skeleton) return plugin.getConfig().getExp("monster.Skeleton");
+        if (entity instanceof Creeper) {
+            return plugin.getConfig().getExp("monster.Creeper");
+        }
+        if (entity instanceof Enderman) {
+            return plugin.getConfig().getExp("monster.Enderman");
+        }
+        if (entity instanceof Ghast) {
+            return plugin.getConfig().getExp("monster.Ghast");
+        }
+        if (entity instanceof Giant) {
+            return plugin.getConfig().getExp("monster.Giant");
+        }
+        if (entity instanceof PigZombie) {
+            return plugin.getConfig().getExp("monster.PigZombie");
+        }
+        if (entity instanceof Silverfish) {
+            return plugin.getConfig().getExp("monster.Silverfish");
+        }
+        if (entity instanceof Skeleton) {
+            return plugin.getConfig().getExp("monster.Skeleton");
+        }
         if (entity instanceof Slime) {
             if (entity instanceof MagmaCube) { // Before Slime
                 return plugin.getConfig().getExp("monster.MagmaCube");
@@ -162,14 +183,28 @@ public class OrbListener implements Listener {
                 return plugin.getConfig().getExp("monster.Spider");
             }
         }
-        if (entity instanceof Zombie) return plugin.getConfig().getExp("monster.Zombie");
+        if (entity instanceof Zombie) {
+            return plugin.getConfig().getExp("monster.Zombie");
+        }
         // Animals
-        if (entity instanceof Wolf) return plugin.getConfig().getExp(((Wolf) entity).isTamed()?"animal.tameWolf":"monster.Wolf");
-        if (entity instanceof Chicken) return plugin.getConfig().getExp("animal.Chicken");
-        if (entity instanceof Cow) return plugin.getConfig().getExp("animal.Cow");
-        if (entity instanceof Pig) return plugin.getConfig().getExp("animal.Pig");
-        if (entity instanceof Sheep) return plugin.getConfig().getExp("animal.Sheep");
-        if (entity instanceof Squid) return plugin.getConfig().getExp("animal.Squid");
+        if (entity instanceof Wolf) {
+            return plugin.getConfig().getExp(((Wolf) entity).isTamed() ? "animal.tameWolf" : "monster.Wolf");
+        }
+        if (entity instanceof Chicken) {
+            return plugin.getConfig().getExp("animal.Chicken");
+        }
+        if (entity instanceof Cow) {
+            return plugin.getConfig().getExp("animal.Cow");
+        }
+        if (entity instanceof Pig) {
+            return plugin.getConfig().getExp("animal.Pig");
+        }
+        if (entity instanceof Sheep) {
+            return plugin.getConfig().getExp("animal.Sheep");
+        }
+        if (entity instanceof Squid) {
+            return plugin.getConfig().getExp("animal.Squid");
+        }
 
         plugin.debug("\"" + entity.getType() + "\" not found. 0 Experience.");
         return 0;
@@ -190,7 +225,7 @@ public class OrbListener implements Listener {
 
         EntityDamageEvent.DamageCause cause = p.getLastDamageCause() == null ? EntityDamageEvent.DamageCause.CUSTOM : p.getLastDamageCause().getCause();
 
-        int expBase = plugin.getConfig().getBoolean("config.expLossByTotal") && plugin.getConfig().getBoolean("config.playerDelevel") ? e.getTotalExp() : e.getExpToLevel();
+        int expBase = expLossByTotal() ? e.getTotalExp() : e.getExpToLevel();
         double percentage = calculatePercent(cause) / 100D;
 
         Double loss = expBase * percentage;
@@ -223,7 +258,9 @@ public class OrbListener implements Listener {
                 // Burn the experience
                 burn(loss);
 
-                if (loss.intValue() <= 0) return;
+                if (loss.intValue() <= 0) {
+                    return;
+                }
 
                 // Give exp and send message
                 killer.giveExp(loss.intValue());
@@ -234,7 +271,9 @@ public class OrbListener implements Listener {
         }
 
         burn(loss);
-        if (loss.intValue() <= 0) return;
+        if (loss.intValue() <= 0) {
+            return;
+        }
         event.setDroppedExp(loss.intValue());
     }
 
@@ -245,7 +284,7 @@ public class OrbListener implements Listener {
 
         int percent = plugin.getConfig().getPercent("config.expBurn");
         if (percent > 0) {
-            value -= value * (percent/100D);
+            value -= value * (percent / 100D);
         }
     }
 
@@ -263,7 +302,7 @@ public class OrbListener implements Listener {
     }
 
     private String gainMessage(int exp) {
-        return "You " + (exp >= 0 ? ("gained " + exp ): ("lost " + -exp)) + " exp";
+        return "You " + (exp >= 0 ? ("gained " + exp) : ("lost " + -exp)) + " exp";
     }
 
     private void sendExpMessage(Player player, String message) {
@@ -280,70 +319,80 @@ public class OrbListener implements Listener {
 
     private int calculatePercent(EntityDamageEvent.DamageCause dc) {
         if (plugin.getConfig().getBoolean("config.customExpLoss")) {
-            switch(dc) {
+            switch (dc) {
                 // TODO: Suffocation and Fall percent
                 //case SUFFOCATION: return Plugin.expLossSuffocate;
                 //case FALL: return Plugin.expLossFall;
 
-                case CONTACT: return plugin.getConfig().getPercent("expLoss.Contact");
+                case CONTACT:
+                    return plugin.getConfig().getPercent("expLoss.Contact");
 
                 case FIRE:
-                case FIRE_TICK: return plugin.getConfig().getPercent("expLoss.Fire");
+                case FIRE_TICK:
+                    return plugin.getConfig().getPercent("expLoss.Fire");
 
-                case LAVA: return plugin.getConfig().getPercent("expLoss.Lava");
+                case LAVA:
+                    return plugin.getConfig().getPercent("expLoss.Lava");
 
-                case DROWNING: return plugin.getConfig().getPercent("expLoss.Drown");
+                case DROWNING:
+                    return plugin.getConfig().getPercent("expLoss.Drown");
 
-                case BLOCK_EXPLOSION: return plugin.getConfig().getPercent("expLoss.TnT");
+                case BLOCK_EXPLOSION:
+                    return plugin.getConfig().getPercent("expLoss.TnT");
 
-                case VOID: return plugin.getConfig().getPercent("expLoss.Void");
+                case VOID:
+                    return plugin.getConfig().getPercent("expLoss.Void");
 
-                case LIGHTNING: return plugin.getConfig().getPercent("expLoss.Lightning");
+                case LIGHTNING:
+                    return plugin.getConfig().getPercent("expLoss.Lightning");
 
-                case SUICIDE: return plugin.getConfig().getPercent("expLoss.Suicide");
+                case SUICIDE:
+                    return plugin.getConfig().getPercent("expLoss.Suicide");
 
-                default: return plugin.getConfig().getPercent("expLoss.Basic");
+                default:
+                    return plugin.getConfig().getPercent("expLoss.Basic");
             }
         } else {
             return plugin.getConfig().getPercent("expLoss.Basic");
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void blockBreak(BlockBreakEvent event) {
-        String key = "blockExp."+event.getBlock().getType().toString() + ".break";
+        String key = "blockExp." + event.getBlock().getType().toString() + ".break";
         int exp = plugin.getConfig().getExp(key);
 
-        if (PlayerBreakBlockDropOrbEvent.getHandlerList().getRegisteredListeners().length > 0) {
-            PlayerBreakBlockDropOrbEvent e = new PlayerBreakBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
-
-            int chance = plugin.getConfig().getPercent("chance.blockBreak");
-            e.setCancelled(chance == 0 || (chance < 100 && chance > random.nextInt(100)));
-
-            plugin.getServer().getPluginManager().callEvent(e);
-
-            exp = e.getExp();
-
-            if (e.isCancelled()) {
-                return;
-            }
-        } else {
-            int chance = plugin.getConfig().getPercent("chance.blockBreak");
-            if (chance == 0 || (chance < 100 && chance > random.nextInt(100))) {
-                return;
-            }
+        if (event.getExpToDrop() != 0 && exp == 0) {
+            return; // Use the defaults
         }
 
-        // Don't give 0 experience... Illegal!
-        if (exp == 0) {
+        int chance = plugin.getConfig().getPercent("chance.blockBreak");
+        if (chance == 0 || (chance < 100 && chance > random.nextInt(100))) {
             return;
         }
 
-        if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
-            giveExperience(event.getPlayer(), exp);
-        } else {
-            spawnExperience(event, exp);
+        event.setExpToDrop(exp);
+    }
+
+    // We should use MONITOR here (Even though we're "changing" the event)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void giveVirtualExp(BlockBreakEvent event) {
+        if (!plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
+            return;
         }
+
+        giveExperience(event.getPlayer(), event.getExpToDrop());
+        event.setExpToDrop(0); // Drop nothing.
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void expChange(PlayerExpChangeEvent event) {
+        if (event.getAmount() >= 0) {
+            return;
+        }
+
+        new Editor(event.getPlayer()).takeExp(event.getAmount(), expLossByTotal());
+        event.setAmount(0); // After taking experience, set to 0. Don't want minecraft fucking up. :D
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -351,8 +400,8 @@ public class OrbListener implements Listener {
         String key = "blockExp." + event.getBlock().getType().toString() + ".place";
         int exp = plugin.getConfig().getExp(key);
 
-        if (PlayerPlaceBlockDropOrbEvent.getHandlerList().getRegisteredListeners().length > 0) {
-            PlayerPlaceBlockDropOrbEvent e = new PlayerPlaceBlockDropOrbEvent(event.getPlayer(), event.getBlock(), exp);
+        if (BlockPlaceExpEvent.getHandlerList().getRegisteredListeners().length > 0) {
+            BlockPlaceExpEvent e = new BlockPlaceExpEvent(event.getPlayer(), event.getBlock(), exp);
 
             int chance = plugin.getConfig().getPercent("chance.blockPlace");
             e.setCancelled(chance == 0 && (chance < 100 && chance > random.nextInt(100)));
@@ -371,11 +420,6 @@ public class OrbListener implements Listener {
             }
         }
 
-        // Don't give 0 experience... Illegal!
-        if (exp == 0) {
-            return;
-        }
-
         if (plugin.getConfig().getBoolean("config.virtualBlockEXP")) {
             giveExperience(event.getPlayer(), exp);
         } else {
@@ -384,16 +428,21 @@ public class OrbListener implements Listener {
     }
 
     private void giveExperience(Player player, int exp) {
-        Editor editor = new Editor(player);
+        // No experience is bad experience
+        if (exp == 0) {
+            return;
+        }
+
         if (exp < 0) {
-            boolean flag = plugin.getConfig().getBoolean("config.expLossByTotal");
+            Editor editor = new Editor(player);
+            boolean flag = expLossByTotal();
             if (flag) {
                 editor.recalcTotalExp();
             }
 
             editor.takeExp(exp, flag);
         } else if (exp > 0) {
-            editor.giveExp(exp);
+            new Editor(player).giveExp(exp);
         }
 
         sendExpMessage(player, gainMessage(exp));
@@ -401,11 +450,15 @@ public class OrbListener implements Listener {
 
     private void spawnExperience(BlockEvent event, int exp) {
         // This needs to be fixed in Minecraft/CraftBukkit!!
-        if (exp < 1) {
+        if (exp == 0) {
             return;
         }
 
         ExperienceOrb orb = event.getBlock().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
         orb.setExperience(exp);
+    }
+
+    private boolean expLossByTotal() {
+        return plugin.getConfig().getBoolean("config.expLossByTotal") && plugin.getConfig().getBoolean("config.playerDelevel");
     }
 }
