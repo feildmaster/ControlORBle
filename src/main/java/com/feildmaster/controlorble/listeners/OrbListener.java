@@ -5,6 +5,8 @@ import com.feildmaster.controlorble.event.BlockPlaceExpEvent;
 import com.feildmaster.lib.expeditor.Editor;
 import java.util.List;
 import java.util.Random;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
@@ -358,8 +360,7 @@ public class OrbListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void blockBreak(BlockBreakEvent event) {
-        String key = "blockExp." + event.getBlock().getType().toString() + ".break";
-        int exp = plugin.getConfig().getExp(key);
+        int exp = plugin.getConfig().getExp(getBlockExpKey(event.getBlock(), "break"));
 
         if (event.getExpToDrop() != 0 && exp == 0) {
             return; // Use the defaults
@@ -407,8 +408,7 @@ public class OrbListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void blockPlace(BlockPlaceEvent event) {
-        String key = "blockExp." + event.getBlock().getType().toString() + ".place";
-        int exp = plugin.getConfig().getExp(key);
+        int exp = plugin.getConfig().getExp(getBlockExpKey(event.getBlock(), "place"));
 
         if (BlockPlaceExpEvent.getHandlerList().getRegisteredListeners().length > 0) {
             BlockPlaceExpEvent e = new BlockPlaceExpEvent(event.getPlayer(), event.getBlock(), exp);
@@ -435,6 +435,14 @@ public class OrbListener implements Listener {
         } else {
             spawnExperience(event, exp);
         }
+    }
+
+    private String getBlockExpKey(Block block, String type) {
+        String string = String.format("blockExp.%s-%d.%s", block.getType(), block.getData(), type);
+        if (!plugin.getConfig().isSet(string)) {
+            string = String.format("blockExp.%s.%s", block.getType(), type);
+        }
+        return string;
     }
 
     private void giveExperience(Player player, int exp) {
