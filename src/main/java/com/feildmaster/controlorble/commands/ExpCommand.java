@@ -53,8 +53,6 @@ public class ExpCommand implements CommandExecutor {
         } else if (size == 2) {
             p1 = sender.getServer().getPlayer(args[0]);
             parse = args[1];
-        } else {
-            return invalidCommand(sender, label);
         }
 
         if (p1 == null) {
@@ -67,14 +65,14 @@ public class ExpCommand implements CommandExecutor {
         int old_lvl = p2.getLevel();
         int exp = 0;
 
+        String n = parse;
         try {
-            String n = parse;
             if (parse.startsWith("+")) {
                 n = parse.substring(1);
             }
             exp = Integer.parseInt(n);
-        } catch (NumberFormatException n) {
-            return notANumber(sender);
+        } catch (NumberFormatException ex) {
+            return notANumber(sender, n);
         }
 
         String format = null;
@@ -122,8 +120,8 @@ public class ExpCommand implements CommandExecutor {
         return true;
     }
 
-    private boolean notANumber(CommandSender sender) {
-        sender.sendMessage(plugin.format("Not a number"));
+    private boolean notANumber(CommandSender sender, String value) {
+        sender.sendMessage(plugin.format("Not a number: " + value));
         return true;
     }
 
