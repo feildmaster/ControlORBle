@@ -9,6 +9,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.metadata.*;
 
@@ -266,15 +267,13 @@ public class OrbListener implements Listener {
                 killer.giveExp(loss.intValue());
                 sendExpMessage(killer, gainMessage(loss.intValue()));
             }
-
-            return;
+        } else {
+            burn(loss);
+            if (loss.intValue() <= 0) {
+                return;
+            }
+            event.setDroppedExp(loss.intValue());
         }
-
-        burn(loss);
-        if (loss.intValue() <= 0) {
-            return;
-        }
-        event.setDroppedExp(loss.intValue());
     }
 
     private void burn(Double value) {
@@ -372,6 +371,17 @@ public class OrbListener implements Listener {
         }
 
         event.setExpToDrop(exp);
+    }
+
+    // We should use MONITOR here (Even though we're "changing" the event)
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void giveVirtualExtractExp(FurnaceExtractEvent event) {
+        if (!plugin.getConfig().getBoolean("config.virtualFurnaceEXP")) {
+            return;
+        }
+
+        giveExperience(event.getPlayer(), event.getExpToDrop());
+        event.setExpToDrop(0); // Drop nothing.
     }
 
     // We should use MONITOR here (Even though we're "changing" the event)

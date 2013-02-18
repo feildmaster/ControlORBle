@@ -8,6 +8,7 @@ config:
     virtualEXP: false
     virtualPlayerEXP: false
     virtualBlockEXP: false
+    virtualFurnaceEXP: false
     hideVirtualEXPMessage: false
     showTotal: false
     expLossByTotal: false
